@@ -1,0 +1,15 @@
+{
+  "name": "mess_management",
+  "version": "1.0.0",
+  "description": "Mess Management in college",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "yes"
+  },
+  "author": "Sudip Saha,Abhishek Prasad",
+  "license": "MIT"
+}

@@ -1,7 +1,7 @@
 const orm = require('sequelize');
 
 // start connection
-const mess = new orm('mess', 'root', 'sudip@123', {
+const mess = new orm('mess', 'root', 'root', {
     host: 'localhost',
     dialect: 'mysql',
     pool: {
@@ -27,5 +27,6 @@ var Rate = mess.define('rate', {
     price: orm.FLOAT,
     qtype: orm.STRING
 });
+Rate.sync();
 
 module.exports = Rate;

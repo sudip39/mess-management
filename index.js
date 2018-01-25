@@ -4,8 +4,6 @@ const Rate = require('./models/rate');
 const ItemPerDay = require('./models/itemperday');
 const bodyParser = require('body-parser');
 
-
-
 // setup body parser
 app.use(bodyParser.urlencoded({extended: true}));
 
@@ -26,20 +24,22 @@ app.get("/itemperday", function(req, res) {
 })
 app.post("/itemperday", function(req, res) {
     //console.log(ItemPerDay);
-    for (let i = 0; i < req.body.item.length; ++i) {
-        if (req.body.item[i]['qty'] != 0) {
+    let Items = req.body.item;
+    for (let i = 0; i < Items.length; ++i) {
+        if (Items[i]['qty'] != 0) {
             ItemPerDay.findAll({
-                where : {
-                    id : req.body.item[i]['id']
+                attributes: ["id", "qty"],
+                where: { id: parseInt(Items[i]['id'])}
+            }).then(row => {
+                if(row.length != 0)
+                {
+                    ItemPerDay.update(
+                        {qty: parseFloat(Items[i]['qty']) + row[0].dataValues.qty},
+                        {where: {id: parseInt(Items[i]['id'])}
+                    })
+                } else {
+                    ItemPerDay.create(Items[i])
                 }
-            }).then(items => {
-                ItemPerDay.update({
-                    qty : req.body.item[i]['qty']+items.dataValues.qty
-                })
-                if(!items.length)
-                    ItemPerDay.sync().then(() => {
-                        return ItemPerDay.create(req.body.item[i])
-                    }).then(jane => {console.log(jane.toJSON());});
             })
         }
     }

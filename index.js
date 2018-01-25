@@ -3,6 +3,7 @@ const app = express();
 const Rate = require('./models/rate');
 const ItemPerDay = require('./models/itemperday');
 const bodyParser = require('body-parser');
+const dailyBill = require('./models/dailybill');
 
 // setup body parser
 app.use(bodyParser.urlencoded({extended: true}));
@@ -15,6 +16,25 @@ app.get("/allrates", function(req, res) {
     Rate.findAll().then(rates => {
         res.render("allrate.ejs", {rate: rates});
     });
+})
+
+app.get("/print", function(req, res) {
+    let total=0;
+    let itemTotal=0;
+    ItemPerDay.findAll({
+        attributes: ["id", "qty"]
+    }).then(row => 
+        {
+            itemTotal=0;
+        Rate.findAll({
+            attributes: ["name", "price"],
+            where: {id: row[0].dataValues.id}
+        }).then(row1 => {
+            itemTotal=(row1[0].dataValues.price*row[0].dataValues.qty);
+                total+=itemTotal;
+            console.log(row1[0].dataValues,row[0].dataValues.qty," ",itemTotal)})
+    })
+    console.log("total bill=",total);
 })
 
 app.get("/itemperday", function(req, res) {
@@ -30,6 +50,14 @@ app.post("/itemperday", function(req, res) {
             ItemPerDay.findAll({
                 attributes: ["id", "qty"],
                 where: { id: parseInt(Items[i]['id'])}
+                // ItemPerDay.findAll({
+                //     attributes: ["id", "qty"]
+                // }).then(row => {
+                //     Rate.findAll({
+                //         attributes: ["name", "price"],
+                //         where: {id: row[0].dataValues.id}
+                //     }).then(row1 => {console.log(row1[0].dataValues,row[0].dataValues.qty)})
+                // })
             }).then(row => {
                 if(row.length != 0)
                 {

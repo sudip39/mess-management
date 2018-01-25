@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+<body>
+    <form action="/itemperday" method="post">
+        <table border="1px">
+                <% for (let i = 0; i < rate.length; ++i) { %>
+                    <tr>
+                        <td class="addtocart"><%= rate[i].dataValues.name %></td>
+                        <td>
+                            <input type="text" name="item[<%= i %>][id]" value="<%= rate[i].dataValues.id %>" hidden=true>
+                            <input type="text" name="item[<%= i %>][qty]" value="0">
+                        </td>
+                        <td>Rs<%= rate[i].dataValues.price %>/<%= rate[i].dataValues.qtype %></td>
+                    </tr>
+                <% } %>
+        </table>
+    <button type="submit">Submit</button>
+    </form>
+</body>
+</html>

@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+<body>
+    <table border="1px">
+    <% for (let i = 0; i < rate.length; ++i) { %>
+        <tr>
+            <td><%= rate[i].dataValues.name %></td>
+            <td>Rs<%= rate[i].dataValues.price %>/<%= rate[i].dataValues.qtype %></td>
+        </tr>
+    <% } %>
+    </table>
+</body>
+</html>

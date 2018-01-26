@@ -4,6 +4,7 @@ const Rate = require('./models/rate');
 const ItemPerDay = require('./models/itemperday');
 const bodyParser = require('body-parser');
 const dailyBill = require('./models/dailybill');
+const timers = require("timers");
 
 // setup body parser
 app.use(bodyParser.urlencoded({extended: true}));
@@ -17,24 +18,82 @@ app.get("/allrates", function(req, res) {
         res.render("allrate.ejs", {rate: rates});
     });
 })
-
-app.get("/print", function(req, res) {
+app.post("/finalize",function(req,res) {
     let total=0;
     let itemTotal=0;
     ItemPerDay.findAll({
         attributes: ["id", "qty"]
-    }).then(row => 
+    }).then(row => {
+        for(let i=0;i<row.length;i++)
         {
             itemTotal=0;
-        Rate.findAll({
-            attributes: ["name", "price"],
-            where: {id: row[0].dataValues.id}
-        }).then(row1 => {
-            itemTotal=(row1[0].dataValues.price*row[0].dataValues.qty);
-                total+=itemTotal;
-            console.log(row1[0].dataValues,row[0].dataValues.qty," ",itemTotal)})
+    
+            Rate.findAll({
+                attributes: ["name", "price"],
+                where: {id: row[i].dataValues.id}
+            }).then(row1 => {
+                itemTotal = (row1[0].dataValues.price*row[i].dataValues.qty);
+                total += itemTotal;
+               
+                // console.log(row1[0].dataValues,row[0].dataValues.qty," ",itemTotal)})
+            })
+            // console.log("total bill=",total);
+        }
+        
+
+        timers.setTimeout(function () {
+            dailyBill.create({date: new Date(),totalBill: total}).then(row=>
+                {
+                    console.log(row);
+                }
+            )
+            
+
+        }, 200);
     })
-    console.log("total bill=",total);
+
+})
+app.get("/print", function(req, res) {
+    let total=0;
+    let itemTotal=0;
+    var bilArr = [];
+    
+    ItemPerDay.findAll({
+        attributes: ["id", "qty"]
+    }).then(row => {
+        for(let i=0;i<row.length;i++)
+        {
+            itemTotal=0;
+    
+            Rate.findAll({
+                attributes: ["name", "price"],
+                where: {id: row[i].dataValues.id}
+            }).then(row1 => {
+                itemTotal = (row1[0].dataValues.price*row[i].dataValues.qty);
+                total += itemTotal;
+                console.log("Bill Array:", bilArr);
+                bilArr.push({
+                    name: row1[0].dataValues.name,
+                    rate : row1[0].dataValues.price,
+                    qty : row[i].dataValues.qty,
+                    price : itemTotal
+                });
+                // console.log(row1[0].dataValues,row[0].dataValues.qty," ",itemTotal)})
+            })
+            // console.log("total bill=",total);
+        }
+        
+
+        timers.setTimeout(function () {
+            dailyBill.create({date: new Date(),totalBill: total}).then(row=>
+                {
+                    console.log(row);
+                }
+            )
+            res.render("dailyBill.ejs", {items: bilArr, total: total});
+
+        }, 200);
+    })
 })
 
 app.get("/itemperday", function(req, res) {

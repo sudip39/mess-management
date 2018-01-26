@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+<body>
+    <table>
+        <% for (let i = 0; i < items.length; ++i) { %>
+            <tr>
+                <td><%= items[i].name %></td>
+                <td><%= items[i].rate %></td>
+                <td><%= items[i].qty %></td>
+                <td><%= items[i].price %></td>
+            </tr>
+        <% } %>
+        <tr>
+            <td colspan="3">Total Price</td>
+            <td><%= total %></td>
+        </tr>
+    </table>
+    <form action="/finalize" method="post">
+        <button type="submit">Save</button>
+    </form>
+</body>
+</html>

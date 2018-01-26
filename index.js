@@ -42,11 +42,27 @@ app.post("/finalize",function(req,res) {
         
 
         timers.setTimeout(function () {
-            dailyBill.create({date: new Date(),totalBill: total}).then(row=>
+            dailyBill.findAll({
+                    where:{date : new Date().toDateString()}
+                         
+            }).then(row =>{
+                if(row.length!=0)
                 {
-                    console.log(row);
+                    dailyBill.update(
+                        {totalBill: total},
+                        {where : {id : row[0].dataValues.id}}
+                    )
                 }
-            )
+                else
+                {
+                    dailyBill.create({date:new Date().toDateString(),totalBill: total}).then(row=>
+                        {
+                            console.log(row);
+                        }
+                    )
+                }
+            })
+           
             
 
         }, 200);
@@ -85,11 +101,12 @@ app.get("/print", function(req, res) {
         
 
         timers.setTimeout(function () {
-            dailyBill.create({date: new Date(),totalBill: total}).then(row=>
-                {
-                    console.log(row);
-                }
-            )
+            
+            // dailyBill.create({date:new Date().toDateString(),totalBill: total}).then(row=>
+            //     {
+            //         console.log(row);
+            //     }
+            // )
             res.render("dailyBill.ejs", {items: bilArr, total: total});
 
         }, 200);

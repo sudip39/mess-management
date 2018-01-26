@@ -16,7 +16,7 @@ const mess = new orm('mess', 'root', 'root', {
 
 const dailyBill = mess.define('dailyBill', {
     date: {
-        type:orm.DATE,
+        type:orm.DATEONLY,
 
         },
     totalBill: orm.FLOAT

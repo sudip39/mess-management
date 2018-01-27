@@ -6,13 +6,14 @@
 </head>
 <body>
     <form action="/changerate" method="post">
-      <%  for(let i=0; i < row.length;i++) { %>
-        <label for="rate[id]"><%= row[i].dataValues.name %></label>
-        <input type="text" name="rate[id]" value="<%= row[i].dataValues.id %>" hidden="true">
-        <input type="text" name="rate[price]" value="<%= row[i].dataValues.price %>" >
-        <br/>
-    
-        <%} %>
+        <label for="rate[id]">Item Name</label>
+        <select name="rate[id]">
+            <% for (let i = 0; i < row.length; ++i) { %>
+                <option value="<%= row[i].dataValues.id %>"><%= row[i].dataValues.name %></option>
+            <% } %>
+        </select>
+        <label for="rate[price]">Item Price</label>
+        <input type="text" name="rate[price]" />
         <button type="submit">Submit</button>
     </form>
     <br />

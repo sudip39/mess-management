@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Rate</title>
+</head>
+<body>
+    <form action="/changerate" method="post">
+      <%  for(let i=0; i < row.length;i++) { %>
+        <label for="rate[id]"><%= row[i].dataValues.name %></label>
+        <input type="text" name="rate[id]" value="<%= row[i].dataValues.id %>" hidden="true">
+        <input type="text" name="rate[price]" value="<%= row[i].dataValues.price %>" >
+        <br/>
+    
+        <%} %>
+        <button type="submit">Submit</button>
+    </form>
+    <br />
+    <a href="/allrates">All rates</a>
+</body>
+</html>

@@ -18,6 +18,7 @@ app.get("/allrates", function(req, res) {
         res.render("allrate.ejs", {rate: rates});
     });
 })
+
 app.post("/finalize",function(req,res) {
     let total=0;
     let itemTotal=0;
@@ -152,6 +153,24 @@ app.post("/itemperday", function(req, res) {
     res.redirect('/');
 })
 
+app.get("/changerate",function(req,res){
+    Rate.findAll(
+        {
+
+        }
+    ).then(row =>{
+        
+         res.render("changeRate.ejs",{row : row });
+        
+
+      }  )
+})
+app.post("/changerate",function(req,res){
+    Rate.update(
+        {price: parseInt(req.body.rate.price)},
+        {where : {id : parseInt(req.body.rate.id)}}
+    )
+})
 app.get("/newrate", function(req, res) {
     res.render("rate.ejs");
 })

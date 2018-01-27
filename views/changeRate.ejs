@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Rate</title>
+</head>
+<body>
+    <form action="/changerate" method="post">
+        <label for="rate[id]">Item Name</label>
+        <select name="rate[id]">
+            <% for (let i = 0; i < row.length; ++i) { %>
+                <option value="<%= row[i].dataValues.id %>"><%= row[i].dataValues.name %></option>
+            <% } %>
+        </select>
+        <label for="rate[price]">Item Price</label>
+        <input type="text" name="rate[price]" />
+        <button type="submit">Submit</button>
+    </form>
+    <br />
+    <a href="/allrates">All rates</a>
+</body>
+</html>

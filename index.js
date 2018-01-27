@@ -6,6 +6,7 @@ const ChangeRate = require('./models/changerate.js');
 const bodyParser = require('body-parser');
 const dailyBill = require('./models/dailybill');
 const timers = require("timers");
+const common = require('./common')
 
 // setup body parser
 app.use(bodyParser.urlencoded({extended: true}));
@@ -169,6 +170,7 @@ app.get("/newrate", function(req, res) {
 app.post("/newrate", function(req, res){
     Rate.sync().then(() => {
         // insert row
+        req.body.rate.name = common.capitalizeAllWords(req.body.rate.name);
         return Rate.create(req.body.rate);
     }).then(jane => {
         console.log(jane.toJSON());

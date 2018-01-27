@@ -16,16 +16,16 @@ const mess = new orm('mess', 'root', 'root', {
 // initialize model
 var Rate = mess.define('rate', {
     id: {
-        type: orm.INTEGER,
+        type: orm.INTEGER(11),
         autoIncrement: true,
         primaryKey: true
     },
     name: {
-        type: orm.STRING,
+        type: orm.STRING(50),
         unique: true
     },
     price: orm.FLOAT,
-    qtype: orm.STRING
+    qtype: orm.STRING(20)
 });
 Rate.sync();
 

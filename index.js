@@ -146,6 +146,7 @@ app.post("/itemperday", function(req, res) {
 
 app.get("/changerate", function(req,res) {
     Rate.findAll().then(rows => {
+        console.log("Length =", rows.length);
         res.render("changeRate.ejs", {row: rows});
     });
 });

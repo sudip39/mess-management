@@ -9,6 +9,10 @@ const timers = require("timers");
 // setup body parser
 app.use(bodyParser.urlencoded({extended: true}));
 
+// setup assets location
+app.use(express.static(__dirname + "/public"));
+//app.use(express.static('public'));
+
 app.get("/", function(req, res) {
     res.render("home.ejs");
 })

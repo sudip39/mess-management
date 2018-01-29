@@ -24,7 +24,12 @@ app.get("/allrates", function(req, res) {
         res.render("allrate.ejs", {rate: rates});
     });
 });
-
+app.get("/dailybillrecords",function(req,res){
+        console.log("yes");
+    dailyBill.findAll().then(bills => {
+        res.render("records.ejs",{record :bills});
+    })
+})
 app.post("/finalize",function(req,res) {
     let total=0;
     let itemTotal=0;

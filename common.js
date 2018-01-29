@@ -1,3 +1,4 @@
+
 module.exports = {
     capitalizeAllWords: function(str) {
         let trimmedStr = str.trimLeft().trimRight().replace(/  +/g, ' ');
@@ -5,4 +6,6 @@ module.exports = {
             return i.charAt(0).toUpperCase() + i.slice(1);
         }).join(' ');
     }
+  
+
 }

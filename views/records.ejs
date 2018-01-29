@@ -1,0 +1,25 @@
+<% include ./partials/header %>
+<div class="container">
+    <table class="responsive-table" class="centered" class="highlight">
+        <thead>
+            <th>Date</th>
+            <th>Expenditure</th>
+        </thead>
+        <tbody>
+         <%   for( let i=0; i<record.length;i++) { %>
+            <tr>
+                <td><%= record[i].dataValues.date %></td>
+                <td><%=  record[i].dataValues.totalBill %></td>
+            </tr>
+        <% } %>
+        </tbody>
+    </table>
+    <form action="/finalize" method="POST">
+        <div class="row" style="padding-left:20em;padding-right: 30em;" align="center">
+                <button class="btn waves-effect waves-light" type="submit" name="action" align="center">Print
+                        <i class="material-icons right">print</i>
+                </button>
+            </div>   
+    </form>
+</div>
+<% include ./partials/footer %>

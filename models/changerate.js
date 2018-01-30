@@ -19,7 +19,7 @@ const ChangeRate = mess.define('changerate', {
     oldPrice: orm.FLOAT,
     newPrice: orm.FLOAT
 });
-ChangeRate.belongsTo(Rate, {targeKey: 'id'});
+ChangeRate.belongsTo(Rate, {targetKey: 'id'});
 ChangeRate.sync();
 
 module.exports = ChangeRate;

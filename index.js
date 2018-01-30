@@ -4,8 +4,9 @@ const Rate = require('./models/rate');
 const ItemPerDay = require('./models/itemperday');
 const ChangeRate = require('./models/changerate.js');
 const bodyParser = require('body-parser');
-const dailyBill = require('./models/dailybill');
+const DailyBill = require('./models/dailybill');
 const timers = require("timers");
+const common = require('./common')
 
 // setup body parser
 app.use(bodyParser.urlencoded({extended: true}));
@@ -23,7 +24,12 @@ app.get("/allrates", function(req, res) {
         res.render("allrate.ejs", {rate: rates});
     });
 });
-
+app.get("/dailybillrecords",function(req,res){
+        console.log("yes");
+    dailyBill.findAll().then(bills => {
+        res.render("records.ejs",{record :bills});
+    })
+})
 app.post("/finalize",function(req,res) {
     let total=0;
     let itemTotal=0;
@@ -46,16 +52,16 @@ app.post("/finalize",function(req,res) {
         }
 
         timers.setTimeout(() => {
-            dailyBill.findAll({
+            DailyBill.findAll({
                     where:{date : new Date().toDateString()}
 
             }).then(row => {
                 if(row.length!=0) {
-                    dailyBill.update({totalBill: total}, {where : {
+                    DailyBill.update({totalBill: total}, {where : {
                         id : row[0].dataValues.id
                     }});
                 } else {
-                    dailyBill.create({
+                    DailyBill.create({
                         date:new Date().toDateString(),
                         totalBill: total
                     }).then(row => {
@@ -95,7 +101,7 @@ app.get("/print", function(req, res) {
             // console.log("total bill=",total);
         }
         timers.setTimeout(function () {
-            // dailyBill.create({date:new Date().toDateString(),totalBill: total}).then(row=>
+            // DailyBill.create({date:new Date().toDateString(),totalBill: total}).then(row=>
             //     {
             //         console.log(row);
             //     }
@@ -151,12 +157,14 @@ app.get("/changerate", function(req,res) {
     });
 });
 app.post("/changerate",function(req,res) {
-    // ChangeRate.create({
-    //     id: req.body.id,
-    //     oldPrice:
-    // });
+    let object = JSON.parse(req.body.rate.id);
+    req.body.rate.id = object.id;
+    req.body.rate.oldPrice = object.oldPrice;
+    req.body.rate.newPrice = parseFloat(req.body.rate.newPrice);
+    console.log(req.body.rate);
+    ChangeRate.create(req.body.rate);
     Rate.update(
-        {price: parseInt(req.body.rate.price)},
+        {price: req.body.rate.newPrice},
         {where: {id : parseInt(req.body.rate.id)}}
     ).then(rows => {
         res.redirect('/');
@@ -169,6 +177,7 @@ app.get("/newrate", function(req, res) {
 app.post("/newrate", function(req, res){
     Rate.sync().then(() => {
         // insert row
+        req.body.rate.name = common.capitalizeAllWords(req.body.rate.name);
         return Rate.create(req.body.rate);
     }).then(jane => {
         console.log(jane.toJSON());

@@ -14,12 +14,15 @@ const mess = new orm('mess', 'root', 'root', {
     operatorsAliases: false
 });
 
-const dailyBill = mess.define('dailyBill', {
+/* This model will be used for recording the daily bill
+ * It will have total bill per unique date
+ */
+const DailyBill = mess.define('dailyBill', {
     date: {
         type:orm.DATEONLY,
-
-        },
+        primaryKey: true
+    },
     totalBill: orm.FLOAT
-})
-dailyBill.sync();
-module.exports= dailyBill;
+});
+DailyBill.sync();
+module.exports = DailyBill;

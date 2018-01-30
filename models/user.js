@@ -16,7 +16,10 @@ const mess = new orm('mess', 'root', 'root', {
 
 // initialize model
 var User = mess.define('user', {
-    user: orm.STRING,
+    user: 
+         {type:   orm.STRING,
+          unique:true
+            },
     password: orm.STRING,
     
 });

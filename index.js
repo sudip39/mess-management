@@ -1,24 +1,57 @@
+
+
 const express = require('express');
 const app = express();
 const Rate = require('./models/rate');
 const ItemPerDay = require('./models/itemperday');
 const ChangeRate = require('./models/changerate.js');
 const bodyParser = require('body-parser');
-const DailyBill = require('./models/dailybill');
+const dailyBill = require('./models/dailybill');
 const timers = require("timers");
-const common = require('./common')
+const common = require('./common');
+const User = require("./models/user"),
+      bcrypt = require('bcrypt');
+      const saltRounds = 10;
+
 
 // setup body parser
 app.use(bodyParser.urlencoded({extended: true}));
 
 // setup assets location
 app.use(express.static(__dirname + "/public"));
-//app.use(express.static('public'));
+// setup passport
+
+
+
 
 app.get("/", function(req, res) {
     res.render("home.ejs");
 });
+app.get("/login",function(req,res){
+    res.render("login.ejs");
+});
 
+
+app.post("/login", function(req, res){
+    bcrypt.hash(req.body.password, saltRounds, function(err, hash) {
+        // Store hash in your password DB.
+
+        var user={
+            user:"Mess Sake",
+            password:hash
+            }
+            User.create(user).then(row =>{
+            console.log(row);
+            })
+      });
+});
+
+app.get("/dailybillrecords",function(req,res){
+    console.log("yes");
+dailyBill.findAll().then(bills => {
+    res.render("records.ejs",{record :bills});
+})
+})
 app.get("/allrates", function(req, res) {
     Rate.findAll().then(rates => {
         res.render("allrate.ejs", {rate: rates});
@@ -164,7 +197,7 @@ app.post("/changerate",function(req,res) {
     console.log(req.body.rate);
     ChangeRate.create(req.body.rate);
     Rate.update(
-        {price: req.body.rate.newPrice},
+        {price: parseFloat(req.body.rate.newPrice)},
         {where: {id : parseInt(req.body.rate.id)}}
     ).then(rows => {
         res.redirect('/');
@@ -174,7 +207,7 @@ app.post("/changerate",function(req,res) {
 app.get("/newrate", function(req, res) {
     res.render("rate.ejs");
 });
-app.post("/newrate", function(req, res){
+app.post("/newrate",isMessSake, function(req, res){
     Rate.sync().then(() => {
         // insert row
         req.body.rate.name = common.capitalizeAllWords(req.body.rate.name);
@@ -185,7 +218,25 @@ app.post("/newrate", function(req, res){
     res.redirect('/');
     // console.log(req.body);
 });
+function isMessSake(req,res,next)
+{
+    User.findAll().then(row =>{
+        bcrypt.compare(req.body.password,row[0].dataValues.password, function(err, result) {
+            if(result==true)
+            {
 
+            console.log("hacked");
+            next();
+            }
+            else
+            {
+                console.log("chud gaya");
+                res.redirect('/');
+            }
+        });
+    })
+   
+}
 app.listen(8080,"localhost", function(){
     console.log("The Mess server has Started!!!");
 });

@@ -7,8 +7,7 @@
                     <select id="rateid" name="rate[id]">
                         <% for (let i = 0; i < row.length; ++i) { %>
                             <option value='{"id": <%= row[i].dataValues.id %>,
-                                           "oldPrice": <%= row[i].dataValues.price %>}'>
-                                <%= row[i].dataValues.name %>
+                                           "oldPrice": <%= row[i].dataValues.price %>}'><%= row[i].dataValues.name %>
                             </option>
                         <% } %>
                     </select>

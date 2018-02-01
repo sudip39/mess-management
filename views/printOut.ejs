@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css"> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link rel="apple-touch-icon" sizes="57x57" href="/apple-icon-57x57.png">
+ 
+</head>
+<body>
+<div class="container">
+    <h1 style="padding-left:4em;">Hall 3 </h1>
+    <h6 style="padding-left:30em"><strong>Date:</strong> <span><%=new Date().toDateString()%></span></h6>
+    <table class="centered highlight">
+        <thead>
+                <tr>
+                    <th>Item Name</th>
+                    <th>Rate</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                </tr>
+              </thead>
+      <tbody>
+            <% for (let i = 0; i < items.length; ++i) { %>
+                <tr>
+                    <td><%= items[i].name %></td>
+                    <td><%= items[i].rate %></td>
+                    <td><%= items[i].qty %></td>
+                    <td><%= items[i].price %></td>
+                </tr>
+            <% } %>
+            <tr>
+                <td colspan="3">Total Price</td>
+                <td><%= total %></td>
+            </tr>
+      </tbody>
+</table>
+</div>
+<script>
+    document.addEventListener("DOMContentLoaded", function(event) {
+    window.print();
+    window.location="/";
+  });
+</script>

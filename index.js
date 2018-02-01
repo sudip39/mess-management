@@ -26,7 +26,37 @@ app.get("/", function(req, res) {
 app.get("/login",function(req,res){
     res.render("login.ejs");
 });
+app.get("/printOut",function(req,res){
+    let total=0;
+    let itemTotal=0;
+    var bilArr = [];
 
+    ItemPerDay.findAll({
+        attributes: ["id", "qty"]
+    }).then(row => {
+        for(let i = 0; i < row.length; i++) {
+            itemTotal=0;
+            Rate.findAll({
+                attributes: ["name", "price"],
+                where: {id: row[i].dataValues.id}
+            }).then(row1 => {
+                itemTotal = (row1[0].dataValues.price*row[i].dataValues.qty);
+                total += itemTotal;
+              
+                bilArr.push({
+                    name: row1[0].dataValues.name,
+                    rate : row1[0].dataValues.price,
+                    qty : row[i].dataValues.qty,
+                    price : itemTotal
+                });
+            });
+        }
+        timers.setTimeout(function () {
+            res.render("printOut.ejs", {items: bilArr, total: total});
+        }, 200);
+    });
+   
+})
 
 app.post("/login",isMessSake, function(req, res){
     bcrypt.hash(req.body.newPassword, saltRounds, function(err, hash) {
@@ -60,7 +90,7 @@ app.get("/dailybillrecords",function(req,res){
         res.render("records.ejs",{record :bills});
     })
 })
-app.post("/finalize",isMessSake,function(req,res) {
+app.post("/finalize",isHome,function(req,res) {
     let total=0;
     let itemTotal=0;
     ItemPerDay.findAll({
@@ -79,15 +109,15 @@ app.post("/finalize",isMessSake,function(req,res) {
         }
 
         timers.setTimeout(() => {
-            DailyBill.findAll({
+            dailyBill.findAll({
                     where:{date : new Date().toDateString()}
             }).then(row => {
                 if(row.length!=0) {
-                    DailyBill.update({totalBill: total}, {where : {
+                    dailyBill.update({totalBill: total}, {where : {
                         id : row[0].dataValues.id
                     }});
                 } else {
-                    DailyBill.create({
+                    dailyBill.create({
                         date:new Date().toDateString(),
                         totalBill: total
                     }).then(row => {
@@ -97,6 +127,7 @@ app.post("/finalize",isMessSake,function(req,res) {
             });
         }, 200);
     });
+
 });
 
 app.get("/print", function(req, res) {
@@ -193,7 +224,10 @@ app.post("/newrate",isMessSake, function(req, res){
     });
     res.redirect('/');
 });
-
+function isHome(req,res,next){
+    res.redirect('/printOut');
+    next();
+}
 function isMessSake(req,res,next) {
     User.findAll().then(row =>{
         if(row.length==0)

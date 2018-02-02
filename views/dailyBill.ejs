@@ -1,5 +1,10 @@
 <% include partials/header %>
-<div class="container ">
+<style>
+    .table-container {
+        max-width: 700px;
+    }
+   </style>
+<div class="container table-container">
     <table class="table table-hover table-bordered">
         <thead>
             <tr>
@@ -24,11 +29,13 @@
             </tr>
         </tbody>
     </table>
-    <div style="padding-left:30em;">
-        <form action="/finalize" method="POST">
+    
+    <form action="/finalize" method="POST">
+        <div class="text-center">
             <button type="submit" class="btn btn-outline-info btn-rounded waves-effect"  >Print</button>
-        </form>
-    </div>
+        </div>
+    </form>
+
     
 </div>
 <% include partials/footer %>

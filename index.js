@@ -9,8 +9,9 @@ const timers = require("timers");
 const common = require('./common');
 const User = require("./models/user"),
       bcrypt = require('bcrypt');
-      const saltRounds = 10;
+const saltRounds = 10;
 
+var f=0;
 
 // setup body parser
 app.use(bodyParser.urlencoded({extended: true}));
@@ -20,7 +21,17 @@ app.use(express.static(__dirname + "/public"));
 
 
 app.get("/", function(req, res) {
-    res.render("home.ejs");
+    if(f==0)
+    res.render("home.ejs",{success:0});
+    else if(f==1)
+    {
+        res.render("home.ejs",{success:1});  
+    }
+    else
+    {
+        res.render("home.ejs",{success:2});  
+    }
+    f=0;
 });
 app.get("/login",function(req,res){
     res.render("login.ejs");
@@ -240,10 +251,10 @@ function isMessSake(req,res,next) {
         else {
             bcrypt.compare(req.body.password,row[0].dataValues.password, function(err, result) {
                 if(result==true) {
-                    
+                    f=1;
                     next();
                 } else {
-                
+                    f=2;
                     res.redirect('/');
                 }
             });

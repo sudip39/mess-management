@@ -1,8 +1,21 @@
 <% include partials/header %>
-<div class="container">
+<style>
+        .myresponsive {
+            padding-top: 40px;
+            padding-left: 25%;
+            padding-right: 25%;
+        }
+        @media screen and (max-width: 700px) {
+            .myresponsive {
+                padding-left: 15px;
+                padding-right: 15px;
+            }
+        }
+       </style>
+<div class="container myresponsive">
         <form action="/changerate" method="post"  >
             <div class="md-form">
-                <i class="fa fa-lock prefix grey-text"></i>
+               
                     <select id="rateid" name="rate[id]">
                         <% for (let i = 0; i < row.length; ++i) { %>
                             <option value='{"id": <%= row[i].dataValues.id %>,
@@ -11,29 +24,21 @@
                         <% } %>
                     </select>
                     <label for="orangeForm-rate[id]">Item Name</label>
-                </div>
-            </div>
-            <div class="row" style="padding-left:20em; padding-right:20em;">
-                <div class="input-field ">
-                    <label for="rate[newPrice]">Item Price</label>
-                    <input type="text" name="rate[newPrice]" />
-                </div>
             </div>
             <div class="md-form">
-                <i class="fa fa-lock prefix grey-text"></i>
-                <input type="password" id="orangeForm-pass" name="password" class="form-control">
+                    
+                    <input type="text" id="orangeForm-rate[newPrice]" name="rate[newPrice]" />
+                    <label for="orangeForm-rate[newPrice]">Item Price</label>
+                </div>
+            
+            <div class="md-form">
+             
+                <input type="password" id="orangeForm-pass" name="password">
                 <label for="orangeForm-pass">Your password</label>
             </div> 
-            <div class="row" style="padding-left:20em;padding-right: 20em;">
-                    <div class="input-field ">
-                        <label for="rate[price]">Item Price</label>
-                        <input type="text" name="rate[price]" />
-                    </div>
-            </div>
-            <div class="row" style="padding-left:20em;padding-right: 20em;" align="center">
-                <button class="btn waves-effect waves-light" type="submit" name="action">Submit
-                        <i class="material-icons right">send</i>
-                </button>
+           
+            <div class="text-center">
+                    <button class="btn btn-default">Submit</button>
             </div>
         </form>
         <script>

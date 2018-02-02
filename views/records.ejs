@@ -1,6 +1,11 @@
 <% include ./partials/header %>
-<div class="container">
-    <table class="responsive-table" class="centered" class="highlight">
+<style>
+        .table-container {
+            max-width: 60%;
+        }
+</style>
+<div class="container table-container">
+    <table class="table">
         <thead>
             <th>Date</th>
             <th>Expenditure</th>
@@ -14,12 +19,5 @@
         <% } %>
         </tbody>
     </table>
-    <form action="/finalize" method="POST">
-        <div class="row" style="padding-left:20em;padding-right: 30em;" align="center">
-                <button class="btn waves-effect waves-light" type="submit" name="action" align="center">Print
-                        <i class="material-icons right">print</i>
-                </button>
-            </div>   
-    </form>
 </div>
 <% include ./partials/footer %>

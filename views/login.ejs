@@ -1,0 +1,36 @@
+<% include ./partials/header %>
+<style>
+        .myresponsive {
+            padding-top: 40px;
+            padding-left: 25%;
+            padding-right: 25%;
+        }
+        @media screen and (max-width: 700px) {
+            .myresponsive {
+                padding-left: 15px;
+                padding-right: 15px;
+            }
+        }
+</style>
+<div class="container myresponsive">
+    <form  action="/login" method="post">
+        <p class="h5 text-center mb-4">Change Password</p>
+        <div class="md-form">
+            <i class="fa fa-envelope prefix grey-text"></i>
+            <input type="password" id="orangeForm-password" name="password" class="form-control">
+            <label for="orangeForm-password">Old password</label>
+        </div>
+
+        <div class="md-form">
+            <i class="fa fa-lock prefix grey-text"></i>
+            <input type="password" id="orangeForm-newPassword" name="newPassword" class="form-control">
+            <label for="orangeForm-newPassword">New password</label>
+        </div>
+
+        <div class="text-center">
+            <button class="btn btn-deep-orange">Submit</button>
+        </div>
+
+    </form>
+</div>
+<% include ./partials/footer %>

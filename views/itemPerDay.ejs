@@ -1,6 +1,10 @@
 <% include partials/header %>
-<div class="container" align="center" >
-
+<style>
+        .table-container {
+            max-width: 60%;
+        }
+       </style>
+<div class="container table-container">
     <form action="/itemperday" method="post">
         <table class="table table-hover table-bordered  ">
             <thead>
@@ -24,22 +28,13 @@
             </tbody>
         </table>
         <div class="md-form">
-            <i class="fa fa-lock prefix grey-text"></i>
-            <input type="password" id="orangeForm-pass" name="password" class="form-control">
-            <label for="orangeForm-pass">Your password</label>
-        </div>
+                <i class="fa fa-lock prefix grey-text"></i>
+                <input type="password" id="orangeForm-pass" name="password" class="form-control">
+                <label for="orangeForm-pass">Your password</label>
+         </div>
         <div class="text-center">
             <button class="btn btn-default">Submit</button>
         </div>
-    </form>
-    <form action="/resetDailyBill" method="post">
-        <div class="row" style="padding-left:20em;padding-right: 20em;" align="center">
-            <button class="btn waves-effect waves-light" type="submit" name="action">Reset
-                <i class="material-icons right">delete_sweep</i>
-            </button>
-        </div>
-
-    </form>
 
 </div>
 <% include partials/footer %>

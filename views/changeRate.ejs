@@ -1,16 +1,29 @@
 <% include partials/header %>
 <div class="container">
-    <div class="row">
-        <form action="/changerate" method="post" class="col s12">
-            <div class="row" style="padding-left:20em;padding-right: 20em;">
-                    <div class="input-field ">
-                        <select name="rate[id]">
-                            <% for (let i = 0; i < row.length; ++i) { %>
-                                <option value="<%= row[i].dataValues.id %>"><%= row[i].dataValues.name %></option>
-                            <% } %>
-                        </select>
-                    </div>
+        <form action="/changerate" method="post"  >
+            <div class="md-form">
+                <i class="fa fa-lock prefix grey-text"></i>
+                    <select id="rateid" name="rate[id]">
+                        <% for (let i = 0; i < row.length; ++i) { %>
+                            <option value='{"id": <%= row[i].dataValues.id %>,
+                                           "oldPrice": <%= row[i].dataValues.price %>}'><%= row[i].dataValues.name %>
+                            </option>
+                        <% } %>
+                    </select>
+                    <label for="orangeForm-rate[id]">Item Name</label>
+                </div>
             </div>
+            <div class="row" style="padding-left:20em; padding-right:20em;">
+                <div class="input-field ">
+                    <label for="rate[newPrice]">Item Price</label>
+                    <input type="text" name="rate[newPrice]" />
+                </div>
+            </div>
+            <div class="md-form">
+                <i class="fa fa-lock prefix grey-text"></i>
+                <input type="password" id="orangeForm-pass" name="password" class="form-control">
+                <label for="orangeForm-pass">Your password</label>
+            </div> 
             <div class="row" style="padding-left:20em;padding-right: 20em;">
                     <div class="input-field ">
                         <label for="rate[price]">Item Price</label>
@@ -23,6 +36,24 @@
                 </button>
             </div>
         </form>
-    </div>
-</div>  
+        <script>
+         function getSelectedRate() {
+             let el = $("select[name='rate[id]']");
+             let val = JSON.stringify($(el).children(":selected").attr("value"));
+             val = JSON.parse(JSON.parse(val));
+             return val;
+         }
+         function setNewPrice(str) {
+             let el = $("input[name='rate[newPrice]']")[0];
+             console.log(el, str);
+             el.value = str;
+         }
+         $(document).ready(function () {
+             setNewPrice(getSelectedRate().oldPrice);
+         })
+         $("select[name='rate[id]']").change(function () {
+             setNewPrice(getSelectedRate().oldPrice);
+         });
+        </script>
+</div>
 <% include partials/footer %>

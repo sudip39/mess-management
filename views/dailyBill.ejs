@@ -1,45 +1,33 @@
 <% include partials/header %>
-<div class="container">
-    <table class="responsive-table" class="centered" class="highlight">
-            <thead>
-                    <tr>
-                        <th>Item Name</th>
-                        <th>Rate</th>
-                        <th>Quantity</th>
-                        <th>Price</th>
-                    </tr>
-                  </thead>
-          <tbody>
-                <% for (let i = 0; i < items.length; ++i) { %>
-                    <tr>
-                        <td><%= items[i].name %></td>
-                        <td><%= items[i].rate %></td>
-                        <td><%= items[i].qty %></td>
-                        <td><%= items[i].price %></td>
-                    </tr>
-                <% } %>
+<div class="container ">
+    <table class="table table-hover table-bordered">
+        <thead>
+            <tr>
+                <th>Item Name</th>
+                <th>Rate</th>
+                <th>Quantity</th>
+                <th>Price</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% for (let i = 0; i < items.length; ++i) { %>
                 <tr>
-                    <td colspan="3">Total Price</td>
-                    <td><%= total %></td>
+                    <td><%= items[i].name %></td>
+                    <td><%= items[i].rate %></td>
+                    <td><%= items[i].qty %></td>
+                    <td><%= items[i].price %></td>
                 </tr>
-          </tbody>
+            <% } %>
+            <tr>
+                <td colspan="3">Total Price</td>
+                <td><%= total %></td>
+            </tr>
+        </tbody>
     </table>
-    <form action="/finalize" method="POST">
-        <div class="row" style="padding-left:20em;padding-right: 20em;" align="center">
-                <button class="btn waves-effect waves-light" type="submit" name="action">Print
-                        <i class="material-icons right">print</i>
-                </button>
-            </div>
-      
-                    
-    </form>
-    <form action="/resetDailyBill" method="post">
-        <div class="row" style="padding-left:20em;padding-right: 20em;" align="center">
-                <button class="btn waves-effect waves-light" type="submit" name="action">Reset
-                        <i class="material-icons right">delete_sweep</i>
-                </button>
-            </div>
-
-    </form>
+    <div style="padding-left:30em;">
+        <form action="/finalize" method="POST">
+            <button type="button" class="btn btn-outline-info btn-rounded waves-effect"  >Print</button>
+        </form>
+    </div>
 </div>
 <% include partials/footer %>

@@ -1,7 +1,20 @@
 <% include partials/header %>
+<style>
+ .myresponsive {
+     padding-top: 40px;
+     padding-left: 25%;
+     padding-right: 25%;
+ }
+ @media screen and (max-width: 700px) {
+     .myresponsive {
+         padding-left: 15px;
+         padding-right: 15px;
+     }
+ }
+</style>
 <div class="container">
     <form action="/newrate " method="post">
-        <div class="container">
+        <div class="container myresponsive">
             <div class="text-center md-form">
                 <h3 class="pink-text mb-5"><strong>New Rate</strong></h3>
             </div>

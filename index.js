@@ -22,14 +22,14 @@ app.use(express.static(__dirname + "/public"));
 
 app.get("/", function(req, res) {
     if(f==0)
-    res.render("home.ejs",{success:0});
+        res.render("home.ejs",{error: "", success: ""});
     else if(f==1)
     {
-        res.render("home.ejs",{success:1});  
+        res.render("home.ejs",{error: "", success: "Successfully added"});  
     }
     else
     {
-        res.render("home.ejs",{success:2});  
+        res.render("home.ejs",{error: "Wrong details", success: ""});
     }
     f=0;
 });

@@ -7,11 +7,18 @@
         crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.4.5/js/mdb.min.js"></script>
 <script>
- 
     $( document ).ready(function(){
         $('select').material_select();
-       
+        let err = $("#serv-error")[0].value;
+        let suc = $("#serv-success")[0].value
+        if (err !== "")
+            toastr["error"](err);
+        else if (suc !== "")
+            toastr["success"](suc);
     })
+    // $("#alert-target").click(function () {
+    //     toastr["info"]("I was launched via jQuery!")
+    // });
 
 </script>
 </body>

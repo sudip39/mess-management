@@ -1,23 +1,9 @@
 <% include partials/header %>
-   <p><%=  %></p>
-   <%if (parseInt(success)==1) { %>     <div class="alert alert-success alert-dismissible fade show" role="alert">
-    <strong>Success!!!</strong> You have done it Successfully.
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-      <span aria-hidden="true">&times;</span>
-    </button>
-  </div> <% } %>
-<%if (parseInt(success)==2) { %>    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-    <strong>Wrong!!!</strong> Please enter a correct password.
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-      <span aria-hidden="true">&times;</span>
-    </button>
-  </div> <% } %> 
-     
-    
+    <input id="serv-error" type="text" value="<%= error %>" hidden=true>
+    <input id="serv-success" type="text" value="<%= success %>" hidden=true>
     <div class="container">
         <H1>Welcome To Mess Management </H1>
         <H1 align="center">System</H1>
-        
     </div>
 
  <% include partials/footer %>

@@ -10,8 +10,9 @@ const timers = require("timers");
 const common = require('./common');
 const User = require("./models/user"),
       bcrypt = require('bcrypt');
-      const saltRounds = 10;
+const saltRounds = 10;
 
+var f=0;
 
 // setup body parser
 app.use(bodyParser.urlencoded({extended: true}));
@@ -21,7 +22,17 @@ app.use(express.static(__dirname + "/public"));
 
 
 app.get("/", function(req, res) {
-    res.render("home.ejs");
+    if(f==0)
+        res.render("home.ejs",{error: "", success: ""});
+    else if(f==1)
+    {
+        res.render("home.ejs",{error: "", success: "Successfully added"});
+    }
+    else
+    {
+        res.render("home.ejs",{error: "Wrong details", success: ""});
+    }
+    f=0;
 });
 app.get("/login",function(req,res){
     res.render("login.ejs");
@@ -42,7 +53,7 @@ app.get("/printOut",function(req,res){
             }).then(row1 => {
                 itemTotal = (row1[0].dataValues.price*row[i].dataValues.qty);
                 total += itemTotal;
-              
+
                 bilArr.push({
                     name: row1[0].dataValues.name,
                     rate : row1[0].dataValues.price,
@@ -55,7 +66,6 @@ app.get("/printOut",function(req,res){
             res.render("printOut.ejs", {items: bilArr, total: total});
         }, 200);
     });
-   
 })
 
 app.post("/login",isMessSake, function(req, res){
@@ -74,7 +84,7 @@ app.post("/login",isMessSake, function(req, res){
 });
 
 app.get("/dailybillrecords",function(req,res){
-    
+
 dailyBill.findAll().then(bills => {
     res.render("records.ejs",{record :bills});
 })
@@ -85,13 +95,14 @@ app.get("/allrates", function(req, res) {
     });
 });
 app.get("/dailybillrecords",function(req,res){
-        
+
     dailyBill.findAll().then(bills => {
         res.render("records.ejs",{record :bills});
     })
 })
 app.post("/finalize",isHome,function(req,res) {
     let total=0;
+    console.log("hhhg");
     let itemTotal=0;
     ItemPerDay.findAll({
         attributes: ["id", "qty"]
@@ -121,7 +132,7 @@ app.post("/finalize",isHome,function(req,res) {
                         date:new Date().toDateString(),
                         totalBill: total
                     }).then(row => {
-                        
+
                     });
                 }
             });
@@ -146,7 +157,7 @@ app.get("/print", function(req, res) {
             }).then(row1 => {
                 itemTotal = (row1[0].dataValues.price*row[i].dataValues.qty);
                 total += itemTotal;
-              
+
                 bilArr.push({
                     name: row1[0].dataValues.name,
                     rate : row1[0].dataValues.price,
@@ -166,14 +177,27 @@ app.get("/itemperday", function(req, res) {
         res.render("itemPerDay.ejs", {rate: rates});
     });
 });
-app.post("/itemperday", function(req, res) {
+app.post("/itemperday",isMessSake, function(req, res) {
     let Items = req.body.item;
+    ItemPerDay.findAll().then(row=>{
+        if(row.length!=0)
+        {
+            for(let j=0;j<row.length;j++)
+            {
+                if(row[j].dataValues.createdAt.toDateString()!=new Date().toDateString())
+                {
+                    ItemPerDay.destroy({where: {}}).then(function () {});
+                
+                } 
+            } 
+        }
+    });
     for (let i = 0; i < Items.length; ++i) {
         if (Items[i]['qty'] != 0) {
             ItemPerDay.findAll({
-                attributes: ["id", "qty"],
+                attributes: ["id", "qty","createdAt"],
                 where: { id: parseInt(Items[i]['id'])}
-               
+
             }).then(row => {
                 if (row.length != 0) {
                     ItemPerDay.update(
@@ -183,10 +207,11 @@ app.post("/itemperday", function(req, res) {
                 } else {
                     ItemPerDay.create(Items[i]);
                 }
+            
             });
         }
     }
-  
+
     res.redirect('/');
 });
 
@@ -220,7 +245,7 @@ app.post("/newrate",isMessSake, function(req, res){
         req.body.rate.name = common.capitalizeAllWords(req.body.rate.name);
         return Rate.create(req.body.rate);
     }).then(jane => {
-        
+
     });
     res.redirect('/');
 });
@@ -235,10 +260,10 @@ function isMessSake(req,res,next) {
         else {
             bcrypt.compare(req.body.password,row[0].dataValues.password, function(err, result) {
                 if(result==true) {
-                    
+                    f=1;
                     next();
                 } else {
-                
+                    f=2;
                     res.redirect('/');
                 }
             });

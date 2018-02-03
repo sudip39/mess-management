@@ -1,13 +1,21 @@
-<div style="height: 50px">
-
-</div>
-</body>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.4.5/js/mdb.min.js"></script>
 <script>
-    console.log("Fuker");
     $( document ).ready(function(){
         $('select').material_select();
+        let err = $("#serv-error")[0].value;
+        let suc = $("#serv-success")[0].value
+        if (err !== "")
+            toastr["error"](err);
+        else if (suc !== "")
+            toastr["success"](suc);
     })
 </script>
-<script src="http://materializecss.com/templates/starter-template/js/init.js"></script>
+</body>
 </html>

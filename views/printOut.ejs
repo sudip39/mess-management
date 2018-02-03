@@ -1,46 +1,71 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css"> -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <link rel="apple-touch-icon" sizes="57x57" href="/apple-icon-57x57.png">
- 
-</head>
-<body>
-<div class="container">
-    <h1 style="padding-left:4em;">Hall 3 </h1>
-    <h6 style="padding-left:30em"><strong>Date:</strong> <span><%=new Date().toDateString()%></span></h6>
-    <table class="centered highlight">
-        <thead>
-                <tr>
-                    <th>Item Name</th>
-                    <th>Rate</th>
-                    <th>Quantity</th>
-                    <th>Price</th>
-                </tr>
-              </thead>
-      <tbody>
-            <% for (let i = 0; i < items.length; ++i) { %>
-                <tr>
-                    <td><%= items[i].name %></td>
-                    <td><%= items[i].rate %></td>
-                    <td><%= items[i].qty %></td>
-                    <td><%= items[i].price %></td>
-                </tr>
-            <% } %>
-            <tr>
-                <td colspan="3">Total Price</td>
-                <td><%= total %></td>
-            </tr>
-      </tbody>
-</table>
-</div>
-<script>
-    document.addEventListener("DOMContentLoaded", function(event) {
-    window.print();
-    window.location="/";
-  });
-</script>
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <meta name="description" content="The official website of NIT Durgapur">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.4.5/css/mdb.min.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link rel='stylesheet' id='compiled.css-css'  href='https://mdbootstrap.com/wp-content/themes/mdbootstrap4/css/compiled.min.css?ver=4.4.0' type='text/css' media='all' />
+        <link href="https://fonts.googleapis.com/css?family=Comfortaa" rel="stylesheet">
+
+        <link rel="apple-touch-icon" sizes="57x57" href="/apple-icon-57x57.png">
+        <link rel="apple-touch-icon" sizes="60x60" href="/apple-icon-60x60.png">
+        <link rel="apple-touch-icon" sizes="72x72" href="/apple-icon-72x72.png">
+        <link rel="apple-touch-icon" sizes="76x76" href="/apple-icon-76x76.png">
+        <link rel="apple-touch-icon" sizes="114x114" href="/apple-icon-114x114.png">
+        <link rel="apple-touch-icon" sizes="120x120" href="/apple-icon-120x120.png">
+        <link rel="apple-touch-icon" sizes="144x144" href="/apple-icon-144x144.png">
+        <link rel="apple-touch-icon" sizes="152x152" href="/apple-icon-152x152.png">
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-icon-180x180.png">
+        <link rel="icon" type="image/png" sizes="192x192"  href="/android-icon-192x192.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+        <link rel="manifest" href="/manifest.json">
+        <meta name="msapplication-TileColor" content="#ffffff">
+        <meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
+        <meta name="theme-color" content="#ffffff">
+        <title></title>
+    </head>
+    <body>
+
+
+        <div class="container">
+            <h1 style="padding-left:10em;">Hall 3 </h1>
+            <h6 style="padding-left:40em"><strong>Date:</strong> <span><%=new Date().toDateString()%></span></h6>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Item Name</th>
+                        <th>Rate</th>
+                        <th>Quantity</th>
+                        <th>Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% for (let i = 0; i < items.length; ++i) { %>
+                        <tr>
+                            <td><%= items[i].name %></td>
+                            <td><%= items[i].rate %></td>
+                            <td><%= items[i].qty %></td>
+                            <td><%= items[i].price %></td>
+                        </tr>
+                    <% } %>
+                    <tr>
+                        <td colspan="3">Total Price</td>
+                        <td><%= total %></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <script>
+
+         document.addEventListener("DOMContentLoaded", function(event) {
+             window.print();
+         });
+
+        </script>

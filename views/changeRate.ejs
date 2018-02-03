@@ -1,56 +1,63 @@
 <% include partials/header %>
-<div class="container">
-    <div class="row">
-        <form action="/changerate" method="post" class="col s12" >
-            <div class="row"  style="padding-left:20em; padding-right:20em;">
-                <div class="input-field" >
-                    <select id="rateid" name="rate[id]">
-                        <% for (let i = 0; i < row.length; ++i) { %>
-                            <option value='{"id": <%= row[i].dataValues.id %>,
-                                           "oldPrice": <%= row[i].dataValues.price %>}'><%= row[i].dataValues.name %>
-                            </option>
-                        <% } %>
-                    </select>
-                </div>
-            </div>
-            <div class="row" style="padding-left:20em; padding-right:20em;">
-                <div class="input-field ">
-                    <label for="rate[newPrice]">Item Price</label>
-                    <input type="text" name="rate[newPrice]" />
-                </div>
-            </div>
-            <div class="row" style="padding-left:20em;padding-right: 20em;">   
-                <div class="input-field">
-                    <input type="password" name="password">
-                    <label for="password">Password</label>
-                </div>
-               
-            </div>  
-            <div class="row" style="padding-left:20em;padding-right: 20em;">
-                <button class="btn waves-effect waves-light" type="submit" name="action">Submit
-                    <i class="material-icons right">send</i>
-                </button>
-            </div>
-        </form>
-        <script>
-         function getSelectedRate() {
-             let el = $("select[name='rate[id]']");
-             let val = JSON.stringify($(el).children(":selected").attr("value"));
-             val = JSON.parse(JSON.parse(val));
-             return val;
-         }
-         function setNewPrice(str) {
-             let el = $("input[name='rate[newPrice]']")[0];
-             console.log(el, str);
-             el.value = str;
-         }
-         $(document).ready(function () {
-             setNewPrice(getSelectedRate().oldPrice);
-         })
-         $("select[name='rate[id]']").change(function () {
-             setNewPrice(getSelectedRate().oldPrice);
-         });
-        </script>
-    </div>
+<style>
+ .myresponsive {
+     padding-top: 40px;
+     padding-left: 25%;
+     padding-right: 25%;
+ }
+ @media screen and (max-width: 700px) {
+     .myresponsive {
+         padding-left: 15px;
+         padding-right: 15px;
+     }
+ }
+</style>
+<div class="container myresponsive">
+    <form action="/changerate" method="post"  >
+        <div class="md-form">
+            <select id="rateid" name="rate[id]">
+                <% for (let i = 0; i < row.length; ++i) { %>
+                    <option value='{"id": <%= row[i].dataValues.id %>,
+                                   "oldPrice": <%= row[i].dataValues.price %>}'><%= row[i].dataValues.name %>
+                    </option>
+                <% } %>
+            </select>
+            <label for="rate[id]">Item Name</label>
+        </div>
+        <div class="md-form">
+            <input type="text" id="newPrice" name="rate[newPrice]" />
+            <label for="rate[newPrice]" id="nw">Item Price</label>
+        </div>
+
+        <div class="md-form">
+
+            <input type="password" id="pass" name="password">
+            <label for="pass">Your password</label>
+        </div>
+
+        <div class="text-center">
+            <button class="btn btn-default">Submit</button>
+        </div>
+    </form>
 </div>
 <% include partials/footer %>
+<script>
+ function getSelectedRate() {
+     let el = $("select[name='rate[id]']");
+     let val = JSON.stringify($(el).children(":selected").attr("value"));
+     val = JSON.parse(JSON.parse(val));
+     return val;
+ }
+ function setNewPrice(str) {
+     let el = $("input[name='rate[newPrice]']")[0];
+     console.log(el, str);
+     el.value = str;
+ }
+ $(document).ready(function () {
+     setNewPrice(getSelectedRate().oldPrice);
+     $("label#nw").addClass("active");
+ })
+ $("select[name='rate[id]']").change(function () {
+     setNewPrice(getSelectedRate().oldPrice);
+ });
+</script>

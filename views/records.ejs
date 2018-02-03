@@ -1,17 +1,22 @@
 <% include ./partials/header %>
-<div class="container">
-    <table class="centered highlight">
+<style>
+ .table-container {
+     max-width: 60%;
+ }
+</style>
+<div class="container table-container">
+    <table class="table">
         <thead>
             <th>Date</th>
             <th>Expenditure</th>
         </thead>
         <tbody>
-         <%   for( let i=0; i<record.length;i++) { %>
-            <tr>
-                <td><%= record[i].dataValues.date %></td>
-                <td><%=  record[i].dataValues.totalBill %></td>
-            </tr>
-        <% } %>
+            <%   for( let i=0; i<record.length;i++) { %>
+                <tr>
+                    <td><%= record[i].dataValues.date %></td>
+                    <td><%=  record[i].dataValues.totalBill %></td>
+                </tr>
+            <% } %>
         </tbody>
     </table>
 </div>

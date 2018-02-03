@@ -1,11 +1,16 @@
 <% include partials/header %>
-<div class="container">
-    <table class="centered highlight">
+<style>
+ .table-container {
+     max-width: 600px;
+ }
+</style>
+<div class="container table-container">
+    <table class="table table-hover table-bordered">
         <thead>
-                <tr>
-                    <th>Item Name</th>
-                    <th>Rate</th>
-                </tr>
+            <tr>
+                <th>Item Name</th>
+                <th>Rate</th>
+            </tr>
         </thead>
         <tbody>
             <% for (let i = 0; i < rate.length; ++i) { %>
@@ -17,4 +22,4 @@
         </tbody>
     </table>
 </div>
-     <% include partials/footer %>
+<% include partials/footer %>

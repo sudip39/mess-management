@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <meta name="description" content="The official website of NIT Durgapur">
+    <meta name="description" content="Mess Management System">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
@@ -67,11 +67,27 @@
           </li>
           <li class="nav-item">
             <a class="nav-link" href="/dailybillrecords">Records</a>
-            </li
-          <li class="nav-item">
+          </li>
+          <li class="nav-item ">
             <a class="nav-link" href="/login">Mess Secc</a>
           </li>
         </ul>
       </div>
       <!-- Collapsible content -->
     </nav>
+    <script>
+      document.addEventListener("DOMContentLoaded", function(event) {
+      var nav=document.getElementsByClassName("nav-item");
+      for(let i=0;i<nav.length;i++)
+                     {
+                     if(nav[i].children[0].href==window.location)
+                     {
+                     nav[i].classList.add("active");
+                     }
+                     else{
+                     nav[i].classList.remove("active");
+                     }
+                     }
+
+                     });
+                     </script>

@@ -25,13 +25,13 @@ app.get("/", function(req, res) {
     if(f==0)
         res.render("home.ejs",{error: "", success: ""});
     else if(f==1)
-    {
-        res.render("home.ejs",{error: "", success: "Successfully added"});
-    }
+        {
+            res.render("home.ejs",{error: "", success: "Successfully added"});
+        }
     else
-    {
-        res.render("home.ejs",{error: "Wrong details", success: ""});
-    }
+        {
+            res.render("home.ejs",{error: "Wrong details", success: ""});
+        }
     f=0;
 });
 app.get("/login",function(req,res){
@@ -71,23 +71,23 @@ app.get("/printOut",function(req,res){
 app.post("/login",isMessSake, function(req, res){
     bcrypt.hash(req.body.newPassword, saltRounds, function(err, hash) {
         // Store hash in your password DB.
-            User.update(
-                {password: hash },
-                {where: {user: "Mess Sake"}}
-            ).then(row =>{
-                if(row[0]==0) {
-                    User.create({user:"Mess Sake",password:hash}).then(row1 =>{})
-                }
-            })
-      });
-      res.redirect("/");
+        User.update(
+            {password: hash },
+            {where: {user: "Mess Sake"}}
+        ).then(row =>{
+            if(row[0]==0) {
+                User.create({user:"Mess Sake",password:hash}).then(row1 =>{})
+            }
+        })
+    });
+    res.redirect("/");
 });
 
 app.get("/dailybillrecords",function(req,res){
 
-dailyBill.findAll().then(bills => {
-    res.render("records.ejs",{record :bills});
-})
+    dailyBill.findAll().then(bills => {
+        res.render("records.ejs",{record :bills});
+    })
 })
 app.get("/allrates", function(req, res) {
     Rate.findAll().then(rates => {
@@ -108,20 +108,20 @@ app.post("/finalize",isHome,function(req,res) {
         attributes: ["id", "qty"]
     }).then(row => {
         for(let i=0;i<row.length;i++)
-        {
-            itemTotal=0;
-            Rate.findAll({
-                attributes: ["name", "price"],
-                where: {id: row[i].dataValues.id}
-            }).then(row1 => {
-                itemTotal = (row1[0].dataValues.price*row[i].dataValues.qty);
-                total += itemTotal;
-            });
-        }
+            {
+                itemTotal=0;
+                Rate.findAll({
+                    attributes: ["name", "price"],
+                    where: {id: row[i].dataValues.id}
+                }).then(row1 => {
+                    itemTotal = (row1[0].dataValues.price*row[i].dataValues.qty);
+                    total += itemTotal;
+                });
+            }
 
         timers.setTimeout(() => {
             dailyBill.findAll({
-                    where:{date : new Date().toDateString()}
+                where:{date : new Date().toDateString()}
             }).then(row => {
                 if(row.length!=0) {
                     dailyBill.update({totalBill: total}, {where : {
@@ -181,16 +181,16 @@ app.post("/itemperday",isMessSake, function(req, res) {
     let Items = req.body.item;
     ItemPerDay.findAll().then(row=>{
         if(row.length!=0)
-        {
-            for(let j=0;j<row.length;j++)
             {
-                if(row[j].dataValues.createdAt.toDateString()!=new Date().toDateString())
-                {
-                    ItemPerDay.destroy({where: {}}).then(function () {});
-                
-                } 
-            } 
-        }
+                for(let j=0;j<row.length;j++)
+                    {
+                        if(row[j].dataValues.createdAt.toDateString()!=new Date().toDateString())
+                            {
+                                ItemPerDay.destroy({where: {}}).then(function () {});
+
+                            }
+                    }
+            }
     });
     for (let i = 0; i < Items.length; ++i) {
         if (Items[i]['qty'] != 0) {
@@ -207,7 +207,7 @@ app.post("/itemperday",isMessSake, function(req, res) {
                 } else {
                     ItemPerDay.create(Items[i]);
                 }
-            
+
             });
         }
     }
@@ -250,8 +250,24 @@ app.post("/newrate",isMessSake, function(req, res){
     res.redirect('/');
 });
 function isHome(req,res,next){
-    res.redirect('/printOut');
-    next();
+    User.findAll().then(row =>{
+        if(row.length==0)
+            next();
+        else {
+            bcrypt.compare(req.body.password,row[0].dataValues.password, function(err, result) {
+                if(result==true) {
+                    f=1;
+                    res.redirect('/printOut');
+                    next();
+                } else {
+                    f=2;
+                    res.redirect('/');
+                }
+            });
+        }
+    })
+    // res.redirect('/printOut');
+    // next();
 }
 function isMessSake(req,res,next) {
     User.findAll().then(row =>{

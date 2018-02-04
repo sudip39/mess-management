@@ -15,7 +15,7 @@
 <div class="container myresponsive">
     <form action="/changerate" method="post"  >
         <div class="md-form">
-            <select id="rateid" name="rate[id]">
+            <select id="rateid" name="rate[id]"  class="mdb-select colorful-select dropdown-info">
                 <% for (let i = 0; i < row.length; ++i) { %>
                     <option value='{"id": <%= row[i].dataValues.id %>,
                                    "oldPrice": <%= row[i].dataValues.price %>}'><%= row[i].dataValues.name %>

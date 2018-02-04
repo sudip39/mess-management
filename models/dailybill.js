@@ -19,7 +19,7 @@ const mess = new orm('mess', 'root', 'root', {
  */
 const DailyBill = mess.define('dailyBill', {
     date: {
-        type:orm.DATEONLY,
+        type: orm.DATEONLY,
         primaryKey: true
     },
     totalBill: orm.FLOAT

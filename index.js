@@ -102,7 +102,6 @@ app.get("/dailybillrecords",function(req,res){
 })
 app.post("/finalize",isHome,function(req,res) {
     let total=0;
-    console.log("hhhg");
     let itemTotal=0;
     ItemPerDay.findAll({
         attributes: ["id", "qty"]
@@ -125,7 +124,7 @@ app.post("/finalize",isHome,function(req,res) {
             }).then(row => {
                 if(row.length!=0) {
                     dailyBill.update({totalBill: total}, {where : {
-                        id : row[0].dataValues.id
+                        date : row[0].dataValues.date
                     }});
                 } else {
                     dailyBill.create({
@@ -138,7 +137,6 @@ app.post("/finalize",isHome,function(req,res) {
             });
         }, 200);
     });
-
 });
 
 app.get("/print", function(req, res) {

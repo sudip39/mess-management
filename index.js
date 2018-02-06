@@ -1,4 +1,3 @@
-
 const express = require('express');
 const app = express();
 const Rate = require('./models/rate');
@@ -90,7 +89,7 @@ app.get("/allrates", function(req, res) {
     });
 });
 app.get("/dailybillrecords",function(req,res){
-  
+
     dailyBill.findAll({
         where:{
             month: new Date().toDateString().split(" ")[1]
@@ -102,7 +101,7 @@ app.get("/dailybillrecords",function(req,res){
         {
             tot+=bills[i].dataValues.totalBill;
         }
-      
+
         res.render("records.ejs",{record :bills, total:tot});
     })
 })
@@ -133,7 +132,7 @@ app.post("/finalize",isHome,function(req,res) {
                         date : row[0].dataValues.date
                     }});
                 } else {
-                
+
                     dailyBill.create({
                         date:new Date().toDateString(),
                         month:
@@ -208,7 +207,7 @@ app.post("/itemperday",isMessSake, function(req, res) {
                 ItemPerDay.findAll({
                     attributes: ["id", "qty","createdAt"],
                     where: { id: parseInt(Items[i]['id'])}
-    
+
                 }).then(row => {
                     if (row.length != 0) {
                         ItemPerDay.update(
@@ -218,15 +217,15 @@ app.post("/itemperday",isMessSake, function(req, res) {
                     } else {
                         ItemPerDay.create(Items[i]);
                     }
-    
+
                 });
             }
         }
-    
+
         res.redirect('/');
 
     },4000)
-    
+
 });
 
 app.get("/changerate", function(req,res) {
@@ -252,22 +251,12 @@ app.post("/changerate",isMessSake,function(req,res) {
 app.get("/newrate", function(req, res) {
     res.render("rate.ejs");
 });
-// app.get("monthlybill",function(req,res){
-
-//     dailyBill.findAll({
-//         where: {
-            
-//         }
-//     })
-// })
 app.post("/newrate",isMessSake, function(req, res){
     Rate.sync().then(() => {
         // insert row
         req.body.rate.name = common.capitalizeAllWords(req.body.rate.name);
         return Rate.create(req.body.rate);
-    }).then(jane => {
-
-    });
+    }).then(jane => {});
     res.redirect('/');
 });
 function isHome(req,res,next){

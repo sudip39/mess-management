@@ -1,9 +1,4 @@
 <% include partials/header %>
-<style>
-        .table-container {
-            max-width: 60%;
-        }
-       </style>
 <div class="container table-container">
     <form action="/itemperday" method="post">
         <table class="table ">
@@ -23,18 +18,17 @@
                         </td>
                         <td>Rs<%= rate[i].dataValues.price %>/<%= rate[i].dataValues.qtype %></td>
                     </tr>
-
                 <% } %>
             </tbody>
         </table>
         <div class="md-form">
-                <i class="fa fa-lock prefix grey-text"></i>
-                <input type="password" id="orangeForm-pass" name="password" class="form-control">
-                <label for="orangeForm-pass">Your password</label>
-         </div>
+            <i class="fa fa-lock prefix grey-text"></i>
+            <input type="password" id="orangeForm-pass" name="password" class="form-control">
+            <label for="orangeForm-pass">Your password</label>
+        </div>
         <div class="text-center">
             <button class="btn btn-default">Submit</button>
         </div>
-
+    </form>
 </div>
 <% include partials/footer %>

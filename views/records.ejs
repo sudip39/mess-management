@@ -1,9 +1,5 @@
 <% include ./partials/header %>
-<style>
- .table-container {
-     max-width: 60%;
- }
-</style>
+
 <div class="container table-container">
     <table class="table">
         <thead>
@@ -17,10 +13,10 @@
                     <td><%=  record[i].dataValues.totalBill %></td>
                 </tr>
             <% } %>
-           <tr>
-               <td>Monthly Bill</td>
-               <td><%=total%></td>
-           </tr>
+            <tr>
+                <td>Monthly Bill</td>
+                <td><%=total%></td>
+            </tr>
         </tbody>
     </table>
 </div>

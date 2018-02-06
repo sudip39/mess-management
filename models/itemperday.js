@@ -1,5 +1,5 @@
-const orm = require('sequelize')
-const Rate = require('./rate');
+const orm = require('sequelize');
+const Item = require('./newitem');
 
 // start connection
 const mess = new orm('mess', 'root', 'root', {
@@ -16,8 +16,8 @@ const mess = new orm('mess', 'root', 'root', {
 
 const ItemPerDay = mess.define('itemperday', {
     qty: orm.FLOAT
-})
-ItemPerDay.belongsTo(Rate, {targetKey: 'id'});
+});
+ItemPerDay.belongsTo(Item, {targetKey: 'id'});
 ItemPerDay.sync();
 
 module.exports = ItemPerDay;

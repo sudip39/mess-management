@@ -2,9 +2,9 @@
 <div class="container myresponsive">
     <form action="/changerate" method="post"  >
         <div class="md-form">
-            <select id="rateid" name="rate[id]" style="width:100%; height:300px;" class=" search-item txt-center">
+            <select id="rateid" name="rate[itemGroup]" style="width:100%; height:300px;" class=" search-item txt-center">
                 <% for (let i = 0; i < row.length; ++i) { %>
-                    <option value='{"id": <%= row[i].dataValues.id %>,
+                    <option value='{"itemId": <%= row[i].dataValues.id %>,
                                    "oldPrice": <%= row[i].dataValues.price %>}'><%= row[i].dataValues.name %>
                     </option>
                 <% } %>
@@ -31,7 +31,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/js/select2.full.min.js"></script>
 <script>
  function getSelectedRate() {
-     let el = $("select[name='rate[id]']");
+     let el = $("select[name='rate[itemGroup]']");
      let val = JSON.stringify($(el).children(":selected").attr("value"));
      val = JSON.parse(JSON.parse(val));
      return val;
@@ -47,7 +47,7 @@
 
 
  })
- $("select[name='rate[id]']").change(function () {
+ $("select[name='rate[itemGroup]']").change(function () {
      setNewPrice(getSelectedRate().oldPrice);
  });
  $(document).ready(function () {

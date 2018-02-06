@@ -1,8 +1,8 @@
 const express = require('express');
 const app = express();
-const Rate = require('./models/rate');
+const Item = require('./models/newitem');
 const ItemPerDay = require('./models/itemperday');
-const ChangeRate = require('./models/changerate.js');
+const ChangeRate = require('./models/changerate');
 const bodyParser = require('body-parser');
 const dailyBill = require('./models/dailybill');
 const timers = require("timers");
@@ -23,14 +23,12 @@ app.use(express.static(__dirname + "/public"));
 app.get("/", function(req, res) {
     if(f==0)
         res.render("home.ejs",{error: "", success: ""});
-    else if(f==1)
-        {
-            res.render("home.ejs",{error: "", success: "Successfully added"});
-        }
-    else
-        {
-            res.render("home.ejs",{error: "Wrong details", success: ""});
-        }
+    else if(f==1) {
+        res.render("home.ejs",{error: "", success: "Successfully added"});
+    }
+    else {
+        res.render("home.ejs",{error: "Wrong details", success: ""});
+    }
     f=0;
 });
 app.get("/login",function(req,res){
@@ -46,7 +44,7 @@ app.get("/printOut",function(req,res){
     }).then(row => {
         for(let i = 0; i < row.length; i++) {
             itemTotal=0;
-            Rate.findAll({
+            Item.findAll({
                 attributes: ["name", "price"],
                 where: {id: row[i].dataValues.id}
             }).then(row1 => {
@@ -77,15 +75,15 @@ app.post("/login",isMessSake, function(req, res){
             if(row[0]==0) {
                 User.create({user:"Mess Sake",password:hash}).then(row1 =>{})
             }
-        })
+        });
     });
     res.redirect("/");
 });
 
 
-app.get("/allrates", function(req, res) {
-    Rate.findAll().then(rates => {
-        res.render("allrate.ejs", {rate: rates});
+app.get("/itemrates", function(req, res) {
+    Item.findAll().then(rates => {
+        res.render("itemRates.ejs", {rate: rates});
     });
 });
 app.get("/dailybillrecords",function(req,res){
@@ -97,8 +95,7 @@ app.get("/dailybillrecords",function(req,res){
     }).then(bills => {
         let tot=0;
         console.log(bills);
-        for(i=0;i<bills.length;i++)
-        {
+        for(i=0;i<bills.length;i++) {
             tot+=bills[i].dataValues.totalBill;
         }
 
@@ -114,7 +111,7 @@ app.post("/finalize",isHome,function(req,res) {
         for(let i=0;i<row.length;i++)
             {
                 itemTotal=0;
-                Rate.findAll({
+                Item.findAll({
                     attributes: ["name", "price"],
                     where: {id: row[i].dataValues.id}
                 }).then(row1 => {
@@ -157,7 +154,7 @@ app.get("/print", function(req, res) {
     }).then(row => {
         for(let i = 0; i < row.length; i++) {
             itemTotal=0;
-            Rate.findAll({
+            Item.findAll({
                 attributes: ["name", "price"],
                 where: {id: row[i].dataValues.id}
             }).then(row1 => {
@@ -179,26 +176,20 @@ app.get("/print", function(req, res) {
 });
 
 app.get("/itemperday", function(req, res) {
-    Rate.findAll().then(rates => {
+    Item.findAll().then(rates => {
         res.render("itemPerDay.ejs", {rate: rates});
     });
 });
 app.post("/itemperday",isMessSake, function(req, res) {
     let Items = req.body.item;
-    ItemPerDay.findAll().then(row=>{
-        if(row.length!=0)
-            {
-                for(let j=0;j<row.length;j++)
-                    {
-                        if(row[j].dataValues.createdAt.toDateString()!==new Date().toDateString())
-                            {
-                                ItemPerDay.destroy({where: {}}).then(function () {});
-                                break;
-
-
-                            }
-                    }
-
+    ItemPerDay.findAll().then(row => {
+        if(row.length!=0) {
+            for(let j=0;j<row.length;j++) {
+                let rowDate = row[j].dataValues.createdAt;
+                if(rowDate.toDateString() !==new Date().toDateString()) {
+                    ItemPerDay.destroy();
+                    break;
+                }
             }
     });
     timers.setTimeout(function(){
@@ -221,41 +212,39 @@ app.post("/itemperday",isMessSake, function(req, res) {
                 });
             }
         }
-
         res.redirect('/');
-
     },4000)
-
 });
 
 app.get("/changerate", function(req,res) {
-    Rate.findAll().then(rows => {
+    Item.findAll().then(rows => {
         res.render("changeRate.ejs", {row: rows});
     });
 });
 
 app.post("/changerate",isMessSake,function(req,res) {
-    let object = JSON.parse(req.body.rate.id);
-    req.body.rate.id = object.id;
+    let object = JSON.parse(req.body.rate.itemGroup);
+    req.body.rate.itemId = object.itemId;
     req.body.rate.oldPrice = object.oldPrice;
     req.body.rate.newPrice = parseFloat(req.body.rate.newPrice);
     ChangeRate.create(req.body.rate);
-    Rate.update(
+    Item.update(
         {price: parseFloat(req.body.rate.newPrice)},
-        {where: {id : parseInt(req.body.rate.id)}}
+        {where: {id : parseInt(req.body.rate.itemId)}}
     ).then(rows => {
+        console.log("hello");
         res.redirect('/');
     });
 });
 
-app.get("/newrate", function(req, res) {
-    res.render("rate.ejs");
+app.get("/newitem", function(req, res) {
+    res.render("newitem.ejs");
 });
-app.post("/newrate",isMessSake, function(req, res){
-    Rate.sync().then(() => {
+app.post("/newitem",isMessSake, function(req, res){
+    Item.sync().then(() => {
         // insert row
         req.body.rate.name = common.capitalizeAllWords(req.body.rate.name);
-        return Rate.create(req.body.rate);
+        return Item.create(req.body.rate);
     }).then(jane => {});
     res.redirect('/');
 });

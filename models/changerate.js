@@ -1,5 +1,5 @@
 const orm = require('sequelize');
-const Rate = require('./rate');
+const Item = require('./newitem');
 
 // start connection
 const mess = new orm('mess', 'root', 'root', {
@@ -15,11 +15,10 @@ const mess = new orm('mess', 'root', 'root', {
 });
 
 const ChangeRate = mess.define('changerate', {
-    date: orm.DATEONLY,
     oldPrice: orm.FLOAT,
     newPrice: orm.FLOAT
 });
-ChangeRate.belongsTo(Rate, {targetKey: 'id'});
+ChangeRate.belongsTo(Item, {targetKey: 'id'});
 ChangeRate.sync();
 
 module.exports = ChangeRate;

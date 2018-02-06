@@ -15,3 +15,10 @@
 .txt-center{
     text-align: center ;
 }
+
+
+.img-size{
+
+    height: 240px;
+    width: 100%;
+}

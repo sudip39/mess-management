@@ -14,19 +14,18 @@ const mess = new orm('mess', 'root', 'root', {
 });
 
 // initialize model
-var Rate = mess.define('rate', {
+var Item = mess.define('item', {
     id: {
         type: orm.INTEGER(11),
         autoIncrement: true,
         primaryKey: true
     },
     name: {
-        type: orm.STRING(50),
-        unique: true
+        type: orm.STRING(50)
     },
     price: orm.FLOAT,
     qtype: orm.STRING(20)
 });
-Rate.sync();
+Item.sync();
 
-module.exports = Rate;
+module.exports = Item;

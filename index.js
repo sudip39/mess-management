@@ -64,7 +64,9 @@ app.get("/printOut",function(req,res){
         }, 200);
     });
 })
-
+app.post("/finalize",isMessSake,function(req,res){
+    res.redirect("/printOut");
+})
 app.post("/login",isMessSake, function(req, res){
     bcrypt.hash(req.body.newPassword, saltRounds, function(err, hash) {
         // Store hash in your password DB.
@@ -102,47 +104,7 @@ app.get("/dailybillrecords",function(req,res){
         res.render("records.ejs",{record :bills, total:tot});
     })
 })
-app.post("/finalize",isHome,function(req,res) {
-    let total=0;
-    let itemTotal=0;
-    ItemPerDay.findAll({
-        attributes: ["id", "qty"]
-    }).then(row => {
-        for(let i=0;i<row.length;i++)
-            {
-                itemTotal=0;
-                Item.findAll({
-                    attributes: ["name", "price"],
-                    where: {id: row[i].dataValues.id}
-                }).then(row1 => {
-                    itemTotal = (row1[0].dataValues.price*row[i].dataValues.qty);
-                    total += itemTotal;
-                });
-            }
 
-        timers.setTimeout(() => {
-            dailyBill.findAll({
-                where:{date : new Date().toDateString()}
-            }).then(row => {
-                if(row.length!=0) {
-                    dailyBill.update({totalBill: total}, {where : {
-                        date : row[0].dataValues.date
-                    }});
-                } else {
-
-                    dailyBill.create({
-                        date:new Date().toDateString(),
-                        month:
-                        new Date().toDateString().split(" ")[1],
-                        totalBill: total
-                    }).then(row => {
-
-                    });
-                }
-            });
-        }, 200);
-    });
-});
 
 app.get("/print", function(req, res) {
     let total=0;
@@ -327,6 +289,6 @@ function isMessSake(req,res,next) {
     })
 }
 
-app.listen(8080,"localhost", function(){
+app.listen(8080,"172.16.40.213", function(){
     console.log("The Mess server has Started!!!");
 });

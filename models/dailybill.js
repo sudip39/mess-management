@@ -22,7 +22,6 @@ const DailyBill = mess.define('dailyBill', {
         type: orm.DATEONLY,
         primaryKey: true
     },
-    month:orm.STRING,
     totalBill: orm.FLOAT
 });
 DailyBill.sync();

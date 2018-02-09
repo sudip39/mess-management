@@ -3,22 +3,28 @@
     padding-left: 25%;
     padding-right: 25%;
 }
+
 @media screen and (max-width: 700px) {
     .myresponsive {
         padding-left: 15px;
         padding-right: 15px;
     }
 }
+
 .table-container {
     max-width: 60%;
 }
+
 .txt-center{
     text-align: center ;
 }
 
-
 .img-size{
-
     height: 240px;
     width: 100%;
+}
+
+.full-width {
+    width: 100%;
+    min-width: 100%;
 }

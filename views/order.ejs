@@ -3,7 +3,7 @@
     <form action="/order" method="post" class="order-form">
         <div class="container">
             <div class="md-form">
-                <select name="supplierId" style="width:100%; height:300px;" class=" search-item txt-center">
+                <select name="supplierId" class="full-width">
                     <option value='none'>Select supplier name</option>
                     <% for (let i = 0; i < supplier.length; ++i) { %>
                         <option value='<%= supplier[i].dataValues.id %>'><%= supplier[i].dataValues.name %>
@@ -15,7 +15,7 @@
                 <table style="width: 100%"></table>
             </div>
             <div class="md-form">
-                <select id="items" style="width:100%; height:300px;" class="search-item txt-center">
+                <select id="items" class="full-widthx">
                     <option value="none">Select an item</option>
                     <% for (let i = 0; i < item.length; ++i) { %>
                         <option value='{"itemId": <%= item[i].dataValues.id %>,
@@ -57,16 +57,17 @@
                            "<input hidden='true' type='text' name='item[" + i + "][rate]'" + " value='" + rate + "' />" +
                            "<div class='md-form'>" +
                            "<input type='text' required id='orangeForm-"+i+"' name='item[" + i + "][qty]' " + " autocomplete='off' />" +
-                           "<label for='orangeForm-"+i+"'>Quantity</label>" + "</div></td><td>" +
-                           "<button style='float: right' class='btn btn-default remove-btn'>" +
-                           "Remove"+
-                           "</button>"+
-                           "</td></tr>");
+                           "<label for='orangeForm-"+i+"'>Quantity</label>" +
+                           "</div></td>" +
+                           "<td><div class='md-form'>" +
+                           "<a class=' remove-btn btn-floating btn-sm btn-danger'>" +
+                           "<i class='fa fa-close'></i></a>" +
+                           "</div></td></tr>");
          i++;
      })
      $(document).on('click', '.remove-btn', function(e) {
          e.preventDefault();
-         $(this).parent().parent().remove();
+         $(this).parent().parent().parent().remove();
          $(this).remove();
      })
  });

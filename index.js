@@ -255,6 +255,8 @@ app.post("/order", isMessSake, function(req,res){
     res.redirect('/');
 });
 
+
+
 app.get("/newsupplier",function(req,res){
     res.render("supplier.ejs");
 });
@@ -266,11 +268,10 @@ app.get("/newitem", function(req, res) {
     res.render("newitem.ejs");
 });
 app.post("/newitem",isMessSake, function(req, res){
-    Item.sync().then(() => {
-        // insert row
-        req.body.rate.name = common.capitalizeAllWords(req.body.rate.name);
-        return Item.create(req.body.rate);
-    }).then(jane => {});
+    req.body.rate.name = common.capitalizeAllWords(req.body.rate.name);
+    Item.create(req.body.rate).then(row => {
+        Storage.create(req.body.rate);
+    });
     res.redirect('/');
 });
 function isHome(req,res,next){

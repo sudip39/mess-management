@@ -2,14 +2,15 @@ const express = require('express');
 const app = express();
 const Item = require('./models/newitem');
 const ItemPerDay = require('./models/itemperday');
-const ChangeRate = require('./models/changerate');
 const bodyParser = require('body-parser');
 const dailyBill = require('./models/dailybill');
 const timers = require("timers");
 const common = require('./common');
-const User = require("./models/user"),
-      bcrypt = require('bcrypt');
+const User = require("./models/user");
+const bcrypt = require('bcrypt');
 const saltRounds = 10;
+const Supplier = require('./models/supplier');
+const Order = require('./models/order')
 
 var f=0;
 
@@ -90,17 +91,12 @@ app.get("/itemrates", function(req, res) {
 });
 app.get("/dailybillrecords",function(req,res){
 
-    dailyBill.findAll({
-        where:{
-            month: new Date().toDateString().split(" ")[1]
-        }
-    }).then(bills => {
+    dailyBill.findAll().then(bills => {
         let tot=0;
         console.log(bills);
         for(i=0;i<bills.length;i++) {
             tot+=bills[i].dataValues.totalBill;
         }
-
         res.render("records.ejs",{record :bills, total:tot});
     })
 })
@@ -228,9 +224,7 @@ app.get("/changerate", function(req,res) {
 app.post("/changerate",isMessSake,function(req,res) {
     let object = JSON.parse(req.body.rate.itemGroup);
     req.body.rate.itemId = object.itemId;
-    req.body.rate.oldPrice = object.oldPrice;
     req.body.rate.newPrice = parseFloat(req.body.rate.newPrice);
-    ChangeRate.create(req.body.rate);
     Item.update(
         {price: parseFloat(req.body.rate.newPrice)},
         {where: {id : parseInt(req.body.rate.itemId)}}
@@ -239,7 +233,35 @@ app.post("/changerate",isMessSake,function(req,res) {
         res.redirect('/');
     });
 });
+app.get("/order",function(req,res) {
+    Supplier.findAll().then(row => {
+        Item.findAll().then(row1 => {
+            res.render("order.ejs",{supplier: row,item: row1});
+        });
+    });
+});
+app.post("/order", isMessSake, function(req,res){
+    let input = req.body;
+    let items = input.item;
+    for (let i = 0; i < items.length; ++i) {
+        items[i].supplierId = input.supplierId;
+        items[i].billNo = input.billNo;
+        Order.create(items[i]).then(row => {
+            if (row.length > 0) {
+                Storage.update();
+            }
+        });
+    }
+    res.redirect('/');
+});
 
+app.get("/newsupplier",function(req,res){
+    res.render("supplier.ejs");
+});
+app.post("/newsupplier",isMessSake,function(req,res){
+    Supplier.create({"name": req.body.name});
+    res.redirect("/");
+});
 app.get("/newitem", function(req, res) {
     res.render("newitem.ejs");
 });
@@ -289,6 +311,6 @@ function isMessSake(req,res,next) {
     })
 }
 
-app.listen(8080,"172.16.40.213", function(){
+app.listen(8080,"localhost", function(){
     console.log("The Mess server has Started!!!");
 });

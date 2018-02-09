@@ -6,14 +6,17 @@
         integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
         crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.4.5/js/mdb.min.js"></script>
+
 <script>
-    $( document ).ready(function(){
-        let err = $("#serv-error")[0].value;
-        let suc = $("#serv-success")[0].value
-        if (err !== "")
-            toastr["error"](err);
-        else if (suc !== "")
-            toastr["success"](suc);
+ $( document ).ready(function() {
+     if ($("#serv-error")[0]) {
+         let err = $("#serv-error")[0].value;
+         let suc = $("#serv-success")[0].value;
+         if (err !== "")
+             toastr["error"](err);
+         else if (suc !== "")
+             toastr["success"](suc);
+     }
     })
 </script>
 <div style="padding-top:10em">
@@ -22,9 +25,9 @@
 <footer class="page-footer indigo center-on-small-only pt-0 fixed-bottom">
 
         <!--Footer Links-->
-       
+
         <!--/Footer Links-->
-    
+
         <!--Copyright-->
         <div class="footer-copyright">
             <div class="container-fluid">
@@ -32,7 +35,15 @@
             </div>
         </div>
         <!--/Copyright-->
-    
+
     </footer>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/js/select2.full.min.js"></script>
+    <script>
+        window.onload = function () {
+            $('select').select2({
+                placeholder: "Select a item"
+            });
+        }
+    </script>
 </body>
 </html>

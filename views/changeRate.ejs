@@ -5,7 +5,7 @@
             <select id="rateid" name="rate[itemGroup]" style="width:100%; height:300px;" class=" search-item txt-center">
                 <% for (let i = 0; i < row.length; ++i) { %>
                     <option value='{"itemId": <%= row[i].dataValues.id %>,
-                                   "oldPrice": <%= row[i].dataValues.price %>}'><%= row[i].dataValues.name %>
+                                   "price": <%= row[i].dataValues.price %>}'><%= row[i].dataValues.name %>
                     </option>
                 <% } %>
             </select>
@@ -42,16 +42,13 @@
      el.value = str;
  }
  $(document).ready(function () {
-     setNewPrice(getSelectedRate().oldPrice);
+     setNewPrice(getSelectedRate().price);
      $("label#nw").addClass("active");
-
-
  })
  $("select[name='rate[itemGroup]']").change(function () {
-     setNewPrice(getSelectedRate().oldPrice);
+     setNewPrice(getSelectedRate().price);
  });
  $(document).ready(function () {
-
      $('select').select2({
          placeholder: "Select a item"
      });

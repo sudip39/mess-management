@@ -1,6 +1,6 @@
 const orm = require('sequelize');
-const Item = require('newitem');
-const Supplier = require('supplier');
+const Item = require('./newitem');
+const Supplier = require('./supplier');
 
 const mess = new orm('mess', 'root', 'root', {
     host: 'localhost',
@@ -16,10 +16,11 @@ const mess = new orm('mess', 'root', 'root', {
 
 const Order = mess.define('order', {
     qty: orm.FLOAT,
+    rate: orm.FLOAT,
     billNo: orm.INTEGER(11)
 });
-Order.hasMany(Item, {target: 'id'});
-Order.hasMany(Supplier, {target: 'id'});
+Order.belongsTo(Item, {target: 'id'});
+Order.belongsTo(Supplier, {target: 'id'});
 Order.sync();
 
 module.exports = Order;

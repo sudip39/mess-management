@@ -3,7 +3,7 @@
     <form action="/order" method="post" class="order-form">
         <div class="container">
             <div class="md-form">
-                <select name="supplierId" class="full-width">
+                <select name="supplierId" class="full-width" required>
                     <option value='none'>Select supplier name</option>
                     <% for (let i = 0; i < supplier.length; ++i) { %>
                         <option value='<%= supplier[i].dataValues.id %>'><%= supplier[i].dataValues.name %>
@@ -26,13 +26,13 @@
             </div>
             <div class="md-form">
                 <i class="fa fa-calendar-minus-o prefix grey-text"></i>
-                <input type="text" required id="orangeForm-billno" name="billNo" class="form-control" />
-                <label for="orangeForm-billno">Bill No</label>
+                <input type="text" required id="orangeForm-billno" name="billNo" class="form-control" required />
+                <label for="orangeForm-billno">Bill No<span class="asterisk">*</span></label>
             </div>
             <div class="md-form">
                 <i class="fa fa-lock prefix grey-text"></i>
-                <input type="password" required id="orangeForm-pass" name="password" class="form-control" />
-                <label for="orangeForm-pass">Your password</label>
+                <input type="password" required id="orangeForm-pass" name="password" class="form-control" required />
+                <label for="orangeForm-pass">Your password<span class="asterisk">*</span></label>
             </div>
             <div class="text-center">
                 <button class="btn btn-default">Submit</button>
@@ -56,7 +56,7 @@
                            "<input hidden='true' type='text' " + "name='item[" + i + "][itemId]' value =" + id + " />" +
                            "<input hidden='true' type='text' name='item[" + i + "][rate]'" + " value='" + rate + "' />" +
                            "<div class='md-form'>" +
-                           "<input type='text' required id='orangeForm-"+i+"' name='item[" + i + "][qty]' " + " autocomplete='off' />" +
+                           "<input type='text' required id='orangeForm-"+i+"' name='item[" + i + "][qty]' " + " autocomplete='off' required />" +
                            "<label for='orangeForm-"+i+"'>Quantity</label>" +
                            "</div></td>" +
                            "<td><div class='md-form'>" +

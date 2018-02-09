@@ -10,7 +10,8 @@ const User = require("./models/user");
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 const Supplier = require('./models/supplier');
-const Order = require('./models/order')
+const Order = require('./models/order');
+const Worker = require('./models/worker');
 
 var f=0;
 
@@ -232,6 +233,18 @@ app.post("/changerate",isMessSake,function(req,res) {
         console.log("hello");
         res.redirect('/');
     });
+});
+app.get("/worker",function(req,res){
+    res.render("worker.ejs");
+});
+app.post("/worker",isMessSake,function(req,res){
+    Worker.create(req.body.worker);
+    res.redirect("/");
+});
+app.get("/wdetails",function(req,res){
+    Worker.findAll().then(record => {
+        res.render("wdetails.ejs",{record:record});
+    })
 });
 app.get("/order",function(req,res) {
     Supplier.findAll().then(row => {

@@ -1,0 +1,19 @@
+<% include ./partials/header %>
+
+<div class="container table-container">
+    <table class="table">
+        <thead>
+            <th>Worker's Name</th>
+            <th>Salary</th>
+        </thead>
+        <tbody>
+            <%   for( let i=0; i<record.length;i++) { %>
+                <tr>
+                    <td><%= record[i].dataValues.name %></td>
+                    <td><%=  record[i].dataValues.salary %></td>
+                </tr>
+            <% } %>
+        </tbody>
+    </table>
+</div>
+<% include ./partials/footer %>

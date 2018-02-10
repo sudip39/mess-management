@@ -13,7 +13,7 @@ const mess = new orm('mess', 'root', 'root', {
     operatorsAliases: false
 });
 
-const Storage = mess.define('order', {
+const Storage = mess.define('storage', {
     qty: orm.FLOAT
 });
 Storage.belongsTo(Item, {target: 'id'});

@@ -8,11 +8,11 @@ const timers = require("timers");
 const common = require('./common');
 const User = require("./models/user");
 const bcrypt = require('bcrypt');
-const saltRounds = 10;
+const orm = require('sequelize');
 const Supplier = require('./models/supplier');
 const Order = require('./models/order');
 const Worker = require('./models/worker');
-
+const Storage = require('./models/storage');
 var f=0;
 
 // setup body parser
@@ -70,7 +70,7 @@ app.post("/finalize",isMessSake,function(req,res){
     res.redirect("/printOut");
 })
 app.post("/login",isMessSake, function(req, res){
-    bcrypt.hash(req.body.newPassword, saltRounds, function(err, hash) {
+    bcrypt.hash(req.body.newPassword, 10, function(err, hash) {
         // Store hash in your password DB.
         User.update(
             {password: hash },
@@ -152,9 +152,18 @@ app.post("/itemperday",isMessSake, function(req, res) {
             }
         }
     });
+    
     timers.setTimeout(function(){
         for (let i = 0; i < Items.length; ++i) {
             if (Items[i]['qty'] != 0) {
+                Storage.findAll(
+                    { where: {itemId:parseInt(Items[i].id)} } 
+                ).then(s =>{
+                    Storage.update(
+                        {qty:s[0].dataValues.qty-Items[i]['qty']},
+                        { where: {itemId:parseInt(Items[i]['id'])} }
+                    );
+                });
                 ItemPerDay.findAll({
                     attributes: ["id", "qty","createdAt"],
                     where: { id: parseInt(Items[i]['id'])}
@@ -214,6 +223,7 @@ app.post("/itemperday",isMessSake, function(req, res) {
     });},200);
         res.redirect('/');
     },4000)
+
 });
 
 app.get("/changerate", function(req,res) {
@@ -256,17 +266,24 @@ app.get("/order",function(req,res) {
 app.post("/order", isMessSake, function(req,res){
     let input = req.body;
     let items = input.item;
+    console.log(items);
     for (let i = 0; i < items.length; ++i) {
         items[i].supplierId = input.supplierId;
         items[i].billNo = input.billNo;
         Order.create(items[i]).then(row => {
-            if (row.length > 0) {
-                Storage.update();
-            }
+            Storage.findAll(
+                { where: {itemId:parseInt(items[i].itemId)} } 
+            ).then(s =>{
+                Storage.update(
+                    {qty:parseInt(items[i].qty)+s[0].dataValues.qty},
+                    { where: {itemId:parseInt(items[i].itemId)} }
+                );
+            });
+         
         });
     }
     res.redirect('/');
-});
+}); 
 
 
 
@@ -283,7 +300,14 @@ app.get("/newitem", function(req, res) {
 app.post("/newitem",isMessSake, function(req, res){
     req.body.rate.name = common.capitalizeAllWords(req.body.rate.name);
     Item.create(req.body.rate).then(row => {
-        Storage.create(req.body.rate);
+        console.log(row);
+        let s={
+            qty:0,
+            itemId:row.dataValues.id
+        }
+        Storage.create(s).then(row1 =>{
+            console.log(row1);
+        })
     });
     res.redirect('/');
 });
@@ -304,8 +328,7 @@ function isHome(req,res,next){
             });
         }
     })
-    // res.redirect('/printOut');
-    // next();
+
 }
 function isMessSake(req,res,next) {
     User.findAll().then(row =>{

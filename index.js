@@ -9,6 +9,7 @@ const common = require('./common');
 const User = require("./models/user");
 const bcrypt = require('bcrypt');
 const orm = require('sequelize');
+const Op = orm.Op;
 const Supplier = require('./models/supplier');
 const Order = require('./models/order');
 const Worker = require('./models/worker');
@@ -152,12 +153,12 @@ app.post("/itemperday",isMessSake, function(req, res) {
             }
         }
     });
-    
+
     timers.setTimeout(function(){
         for (let i = 0; i < Items.length; ++i) {
             if (Items[i]['qty'] != 0) {
                 Storage.findAll(
-                    { where: {itemId:parseInt(Items[i].id)} } 
+                    { where: {itemId:parseInt(Items[i].id)} }
                 ).then(s =>{
                     Storage.update(
                         {qty:s[0].dataValues.qty-Items[i]['qty']},
@@ -272,20 +273,35 @@ app.post("/order", isMessSake, function(req,res){
         items[i].billNo = input.billNo;
         Order.create(items[i]).then(row => {
             Storage.findAll(
-                { where: {itemId:parseInt(items[i].itemId)} } 
+                { where: {itemId:parseInt(items[i].itemId)} }
             ).then(s =>{
                 Storage.update(
                     {qty:parseInt(items[i].qty)+s[0].dataValues.qty},
                     { where: {itemId:parseInt(items[i].itemId)} }
                 );
             });
-         
+
         });
     }
     res.redirect('/');
-}); 
+});
 
-
+app.get("/storage",function(req,res){
+    Storage.findAll({
+        include: [{
+            model: Item,
+            required: true
+        }]
+    }).then(storage => {
+        let items = {qty: [], name: [], qtype: []};
+        for (let i = 0; i < storage.length; ++i) {
+            items.qty[i] = storage[i].dataValues.qty;
+            items.name[i] = storage[i].item.dataValues.name;
+            items.qtype[i]= storage[i].item.dataValues.qtype;
+        }
+        res.render('storage.ejs', {items:items});
+    });
+})
 
 app.get("/newsupplier",function(req,res){
     res.render("supplier.ejs");

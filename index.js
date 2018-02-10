@@ -14,6 +14,7 @@ const Supplier = require('./models/supplier');
 const Order = require('./models/order');
 const Worker = require('./models/worker');
 const Storage = require('./models/storage');
+const Extras = require('./models/extras');
 var f=0;
 
 // setup body parser
@@ -286,6 +287,31 @@ app.post("/order", isMessSake, function(req,res){
     res.redirect('/');
 });
 
+app.get("/extras",function(req,res){
+    res.render("extras.ejs");
+});
+app.post("/extras",isMessSake,function(req,res){
+    Extras.create(req.body.extra);
+    res.redirect('/');
+});
+app.get("/extradetails",function(req,res){
+    Extras.findAll().then(extra =>{
+        res.render("extradetails.ejs",{extra:extra});
+    });
+    
+});
+// app.get("/actualbill",function(req,res){
+//     let total=0;
+//     Order.findAll({
+//         include: [{
+//             model:Supplier,
+//             required:true
+//         }]
+//     }).then(row=>{
+//         console.log(row);
+//     })
+
+// })
 app.get("/storage",function(req,res){
     Storage.findAll({
         include: [{
@@ -312,6 +338,7 @@ app.post("/newsupplier",isMessSake,function(req,res){
 });
 app.get("/newitem", function(req, res) {
     res.render("newitem.ejs");
+
 });
 app.post("/newitem",isMessSake, function(req, res){
     req.body.rate.name = common.capitalizeAllWords(req.body.rate.name);

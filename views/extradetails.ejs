@@ -1,0 +1,19 @@
+<% include ./partials/header %>
+
+<div class="container table-container">
+    <table class="table">
+        <thead>
+            <th>Details</th>
+            <th>Bills</th>
+        </thead>
+        <tbody>
+            <%   for( let i=0; i<extra.length;i++) { %>
+                <tr>
+                    <td><%= extra[i].dataValues.reason %></td>
+                    <td><%=  extra[i].dataValues.bill %></td>
+                </tr>
+            <% } %>
+        </tbody>
+    </table>
+</div>
+<% include ./partials/footer %>

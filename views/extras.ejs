@@ -1,0 +1,31 @@
+<% include partials/header %>
+<div class="container">
+    <form action="/extras" method="post">
+        <div class="container myresponsive">
+            <div class="text-center md-form">
+                <h3 class="pink-text mb-5"><strong>Extra Expenditure</strong></h3>
+            </div>
+
+            <div class="md-form" >
+                <i class="fa fa-shopping-basket prefix grey-text"></i>
+                <input type="text" required id="orangeForm-name" name="extra[reason]" class="form-control">
+                <label for="orangeForm-name">Extras</label>
+            </div>
+            <div class="md-form">
+                <i class="fa fa-inr prefix grey-text"></i>
+                <input type="text" required id="orangeForm-rate[price]" name="extra[bill]" class="form-control">
+                <label for="orangeForm-rate[price]">Bill</label>
+            </div>
+           
+            <div class="md-form">
+                <i class="fa fa-lock prefix grey-text"></i>
+                <input type="password" required id="orangeForm-pass" name="password" class="form-control">
+                <label for="orangeForm-pass">Your password</label>
+            </div>
+            <div class="text-center">
+                <button class="btn btn-default">Submit</button>
+            </div>
+        </div>
+    </form>
+</div>
+<% include partials/footer %>

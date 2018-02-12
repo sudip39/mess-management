@@ -1,6 +1,7 @@
+
 <% include partials/header %>
-<div class="md-form">
-        <select name="supplierId" class="full-width" required>
+<div class="md-form" style="margin-top:20px;position:fixed; width:20%; margin-left:10% ">
+        <select name="supplierId" class="full-width" style="width:100%;" required>
             <option value='none'>Select supplier name</option>
             <% for (let i = 0; i < supplier.length; ++i) { %>
                 <option value='<%= supplier[i].dataValues.id %>'><%= supplier[i].dataValues.name %>
@@ -8,6 +9,9 @@
             <% } %>
         </select>
 </div>
+<br/>
+<br/>
+<br/>
 <div class="md-form" style="position:fixed; width:20%; margin-left:10%" >
         <select id="items" class="full-width" style="width:100%;">
             <option value="none">Select an item</option>

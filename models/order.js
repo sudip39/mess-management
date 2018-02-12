@@ -17,7 +17,8 @@ const mess = new orm('mess', 'root', 'root', {
 const Order = mess.define('order', {
     qty: orm.FLOAT,
     rate: orm.FLOAT,
-    billNo: orm.INTEGER(11)
+    billNo: orm.INTEGER(11),
+    month: orm.STRING
 });
 Order.belongsTo(Item, {target: 'id'});
 Order.belongsTo(Supplier, {target: 'id'});

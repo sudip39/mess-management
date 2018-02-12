@@ -1,29 +1,31 @@
 <% include partials/header %>
+<div class="md-form">
+        <select name="supplierId" class="full-width" required>
+            <option value='none'>Select supplier name</option>
+            <% for (let i = 0; i < supplier.length; ++i) { %>
+                <option value='<%= supplier[i].dataValues.id %>'><%= supplier[i].dataValues.name %>
+                </option>
+            <% } %>
+        </select>
+</div>
+<div class="md-form" style="position:fixed; width:20%; margin-left:10%" >
+        <select id="items" class="full-width" style="width:100%;">
+            <option value="none">Select an item</option>
+            <% for (let i = 0; i < item.length; ++i) { %>
+                <option value='{"itemId": <%= item[i].dataValues.id %>,
+                               "price": <%= item[i].dataValues.price %>}'><%= item[i].dataValues.name %>
+                </option>
+            <% } %>
+        </select>
+</div>
 <div class="container myresponsive">
     <form action="/order" method="post" class="order-form">
         <div class="container">
-            <div class="md-form">
-                <select name="supplierId" class="full-width" required>
-                    <option value='none'>Select supplier name</option>
-                    <% for (let i = 0; i < supplier.length; ++i) { %>
-                        <option value='<%= supplier[i].dataValues.id %>'><%= supplier[i].dataValues.name %>
-                        </option>
-                    <% } %>
-                </select>
-            </div>
+            
             <div class="md-form">
                 <table style="width: 100%"></table>
             </div>
-            <div class="md-form">
-                <select id="items" class="full-widthx">
-                    <option value="none">Select an item</option>
-                    <% for (let i = 0; i < item.length; ++i) { %>
-                        <option value='{"itemId": <%= item[i].dataValues.id %>,
-                                       "price": <%= item[i].dataValues.price %>}'><%= item[i].dataValues.name %>
-                        </option>
-                    <% } %>
-                </select>
-            </div>
+           
             <div class="md-form">
                 <i class="fa fa-calendar-minus-o prefix grey-text"></i>
                 <input type="text" required id="orangeForm-billno" name="billNo" class="form-control" required />

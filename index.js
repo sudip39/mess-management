@@ -272,6 +272,8 @@ app.post("/order", isMessSake, function(req,res){
     for (let i = 0; i < items.length; ++i) {
         items[i].supplierId = input.supplierId;
         items[i].billNo = input.billNo;
+        items[i].month = new Date().toDateString().split(" ")[1];
+
         Order.create(items[i]).then(row => {
             Storage.findAll(
                 { where: {itemId:parseInt(items[i].itemId)} }
@@ -298,20 +300,51 @@ app.get("/extradetails",function(req,res){
     Extras.findAll().then(extra =>{
         res.render("extradetails.ejs",{extra:extra});
     });
-    
 });
-// app.get("/actualbill",function(req,res){
-//     let total=0;
-//     Order.findAll({
-//         include: [{
-//             model:Supplier,
-//             required:true
-//         }]
-//     }).then(row=>{
-//         console.log(row);
-//     })
 
-// })
+app.get("/actualbill",function(req,res){
+    let month=new Date().toDateString().split(" ")[1];
+    let nameArr={name: [],total: [], sum: 0};
+
+    Order.findAll({
+        where: {month: month},
+        group: ['supplierId'],
+        attributes: [[orm.fn('sum', orm.literal('qty * rate')), 'totalPrice']],
+        raw: true,
+        include: [{
+            model: Supplier,
+            attributes: ['name'],
+            required: true
+        }]
+     
+    }).then(row => {
+        
+        for(let i = 0; i < row.length; i++) {
+            nameArr.name[i] = row[i]['supplier.name'];
+            nameArr.total[i] = row[i].totalPrice;
+            nameArr.sum += row[i].totalPrice;
+        }
+
+       
+    });
+    let wsum=0;
+    Worker.findAll().then(row=>{
+        for(let i=-0;i<row.length;i++)
+        {
+            wsum+=row[i].salary;
+        }
+        let esum=0;
+        Extras.findAll().then(row=>{
+            for(let i=-0;i<row.length;i++)
+            {
+                esum+=row[i].bill;
+            }
+            res.render('actualbill.ejs', {bill: nameArr,wsum:wsum,esum:esum});
+        })
+    })
+
+  
+})
 app.get("/storage",function(req,res){
     Storage.findAll({
         include: [{

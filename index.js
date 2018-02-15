@@ -424,7 +424,9 @@ function isHome(req,res,next){
         if(row.length==0)
             next();
         else {
-            bcrypt.compare(req.body.password,row[0].dataValues.password, function(err, result) {
+            bcrypt.compare(req.body.password,
+                           row[0].dataValues.password,
+                           function(err, result) {
                 if(result==true) {
                     f=1;
                     res.redirect('/printOut');
@@ -443,8 +445,10 @@ function isMessSake(req,res,next) {
         if(row.length==0)
             next();
         else {
-            bcrypt.compare(req.body.password,row[0].dataValues.password, function(err, result) {
-                if(result==true) {
+            bcrypt.compare(req.body.password,
+                           row[0].dataValues.password,
+                           function(err, result) {
+                if(result == true) {
                     f=1;
                     next();
                 } else {

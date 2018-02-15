@@ -1,20 +1,21 @@
-const express = require('express');
-const app = express();
-const Item = require('./models/newitem');
-const ItemPerDay = require('./models/itemperday');
-const bodyParser = require('body-parser');
-const dailyBill = require('./models/dailybill');
-const timers = require("timers");
-const common = require('./common');
-const User = require("./models/user");
-const bcrypt = require('bcrypt');
-const orm = require('sequelize');
-const Op = orm.Op;
-const Supplier = require('./models/supplier');
-const Order = require('./models/order');
-const Worker = require('./models/worker');
-const Storage = require('./models/storage');
-const Extras = require('./models/extras');
+const express = require('express'),
+      app = express(),
+      Item = require('./models/newitem'),
+      ItemPerDay = require('./models/itemperday'),
+      bodyParser = require('body-parser'),
+      dailyBill = require('./models/dailybill'),
+      timers = require("timers"),
+      common = require('./common'),
+      User = require("./models/user"),
+      bcrypt = require('bcrypt'),
+      orm = require('sequelize'),
+      Supplier = require('./models/supplier'),
+      Order = require('./models/order'),
+      Worker = require('./models/worker'),
+      Storage = require('./models/storage'),
+      Extras = require('./models/extras');
+
+
 var f=0;
 
 // setup body parser
@@ -35,10 +36,14 @@ app.get("/", function(req, res) {
     }
     f=0;
 });
+
+
 app.get("/login",function(req,res){
     res.render("login.ejs");
 });
-app.get("/printOut",function(req,res){
+
+
+app.get("/printOut", function(req,res) {
     let total=0;
     let itemTotal=0;
     var bilArr = [];
@@ -68,17 +73,21 @@ app.get("/printOut",function(req,res){
         }, 200);
     });
 })
+
+
 app.post("/finalize",isMessSake,function(req,res){
     res.redirect("/printOut");
 })
+
+
 app.post("/login",isMessSake, function(req, res){
     bcrypt.hash(req.body.newPassword, 10, function(err, hash) {
         // Store hash in your password DB.
         User.update(
             {password: hash },
             {where: {user: "Mess Sake"}}
-        ).then(row =>{
-            if(row[0]==0) {
+        ).then(row => {
+            if(row[0] == 0) {
                 User.create({user:"Mess Sake",password:hash}).then(row1 =>{})
             }
         });
@@ -92,11 +101,12 @@ app.get("/itemrates", function(req, res) {
         res.render("itemRates.ejs", {rate: rates});
     });
 });
+
+
 app.get("/dailybillrecords",function(req,res){
 
     dailyBill.findAll().then(bills => {
-        let tot=0;
-        console.log(bills);
+        let tot = 0;
         for(i=0;i<bills.length;i++) {
             tot+=bills[i].dataValues.totalBill;
         }
@@ -105,7 +115,7 @@ app.get("/dailybillrecords",function(req,res){
 })
 
 
-app.get("/print", function(req, res) {
+app.get("/todaysBill", function(req, res) {
     let total=0;
     let itemTotal=0;
     var bilArr = [];
@@ -131,16 +141,19 @@ app.get("/print", function(req, res) {
             });
         }
         timers.setTimeout(function () {
-            res.render("dailyBill.ejs", {items: bilArr, total: total});
+            res.render("todaysBill.ejs", {items: bilArr, total: total});
         }, 200);
     });
 });
+
 
 app.get("/itemperday", function(req, res) {
     Item.findAll().then(rates => {
         res.render("itemPerDay.ejs", {rate: rates});
     });
 });
+
+
 app.post("/itemperday",isMessSake, function(req, res) {
     let Items = req.body.item;
     ItemPerDay.findAll().then(row => {
@@ -228,11 +241,13 @@ app.post("/itemperday",isMessSake, function(req, res) {
 
 });
 
+
 app.get("/changerate", function(req,res) {
     Item.findAll().then(rows => {
         res.render("changeRate.ejs", {row: rows});
     });
 });
+
 
 app.post("/changerate",isMessSake,function(req,res) {
     let object = JSON.parse(req.body.rate.itemGroup);
@@ -242,22 +257,29 @@ app.post("/changerate",isMessSake,function(req,res) {
         {price: parseFloat(req.body.rate.newPrice)},
         {where: {id : parseInt(req.body.rate.itemId)}}
     ).then(rows => {
-        console.log("hello");
         res.redirect('/');
     });
 });
+
+
 app.get("/worker",function(req,res){
     res.render("worker.ejs");
 });
+
+
 app.post("/worker",isMessSake,function(req,res){
     Worker.create(req.body.worker);
     res.redirect("/");
 });
+
+
 app.get("/wdetails",function(req,res){
     Worker.findAll().then(record => {
         res.render("wdetails.ejs",{record:record});
     })
 });
+
+
 app.get("/order",function(req,res) {
     Supplier.findAll().then(row => {
         Item.findAll().then(row1 => {
@@ -265,10 +287,11 @@ app.get("/order",function(req,res) {
         });
     });
 });
+
+
 app.post("/order", isMessSake, function(req,res){
     let input = req.body;
     let items = input.item;
-    console.log(items);
     for (let i = 0; i < items.length; ++i) {
         items[i].supplierId = input.supplierId;
         items[i].billNo = input.billNo;
@@ -289,18 +312,24 @@ app.post("/order", isMessSake, function(req,res){
     res.redirect('/');
 });
 
+
 app.get("/extras",function(req,res){
     res.render("extras.ejs");
 });
+
+
 app.post("/extras",isMessSake,function(req,res){
     Extras.create(req.body.extra);
     res.redirect('/');
 });
+
+
 app.get("/extradetails",function(req,res){
     Extras.findAll().then(extra =>{
         res.render("extradetails.ejs",{extra:extra});
     });
 });
+
 
 app.get("/actualbill",function(req,res){
     let month=new Date().toDateString().split(" ")[1];
@@ -316,35 +345,33 @@ app.get("/actualbill",function(req,res){
             attributes: ['name'],
             required: true
         }]
-     
-    }).then(row => {
-        
-        for(let i = 0; i < row.length; i++) {
-            nameArr.name[i] = row[i]['supplier.name'];
-            nameArr.total[i] = row[i].totalPrice;
-            nameArr.sum += row[i].totalPrice;
+    }).then(r => {
+        for(let i = 0; i < r.length; i++) {
+            nameArr.name[i] = r[i]['supplier.name'];
+            nameArr.total[i] = r[i].totalPrice;
+            nameArr.sum += r[i].totalPrice;
         }
-
-       
-    });
-    let wsum=0;
-    Worker.findAll().then(row=>{
-        for(let i=-0;i<row.length;i++)
-        {
-            wsum+=row[i].salary;
-        }
-        let esum=0;
-        Extras.findAll().then(row=>{
-            for(let i=-0;i<row.length;i++)
-            {
-                esum+=row[i].bill;
+        Worker.findAll().then(row=>{
+            let workerSum = 0;
+            for(let i = 0; i < row.length; i++) {
+                workerSum+=row[i].salary;
             }
-            res.render('actualbill.ejs', {bill: nameArr,wsum:wsum,esum:esum});
-        })
-    })
+            Extras.findAll().then(row => {
+                let esum = 0;
+                for(let i = 0; i < row.length; i++) {
+                    esum += row[i].bill;
+                }
+                res.render('actualbill.ejs', {
+                    bill: nameArr,
+                    wsum: workerSum,
+                    esum: esum
+                });
+            });
+        });
+    });
+});
 
-  
-})
+
 app.get("/storage",function(req,res){
     Storage.findAll({
         include: [{
@@ -362,27 +389,32 @@ app.get("/storage",function(req,res){
     });
 })
 
+
 app.get("/newsupplier",function(req,res){
     res.render("supplier.ejs");
 });
+
+
 app.post("/newsupplier",isMessSake,function(req,res){
     Supplier.create({"name": req.body.name});
     res.redirect("/");
 });
+
+
 app.get("/newitem", function(req, res) {
     res.render("newitem.ejs");
 
 });
+
+
 app.post("/newitem",isMessSake, function(req, res){
     req.body.rate.name = common.capitalizeAllWords(req.body.rate.name);
     Item.create(req.body.rate).then(row => {
-        console.log(row);
         let s={
             qty:0,
             itemId:row.dataValues.id
         }
         Storage.create(s).then(row1 =>{
-            console.log(row1);
         })
     });
     res.redirect('/');
@@ -423,6 +455,7 @@ function isMessSake(req,res,next) {
         }
     })
 }
+
 
 app.listen(8080,"localhost", function(){
     console.log("The Mess server has Started!!!");

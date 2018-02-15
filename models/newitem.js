@@ -23,6 +23,10 @@ var Item = mess.define('item', {
     name: {
         type: orm.STRING(50)
     },
+    common: {
+        type: orm.INTEGER(11),
+        defaultValue: 0
+    },
     price: orm.FLOAT,
     qtype: orm.STRING(20)
 });

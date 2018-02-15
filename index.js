@@ -155,7 +155,17 @@ app.get("/itemperday", function(req, res) {
 
 
 app.post("/itemperday",isMessSake, function(req, res) {
+    
     let Items = req.body.item;
+    let uItems = req.body.uitem;
+    let m=uItems.length;
+    let k=Items.length;
+    for(let i=0;i<m;i++)
+    {
+        Items.push({ id:uItems[i]['id'],
+                        qty:uItems[i]['qty']
+                        });
+    }
     ItemPerDay.findAll().then(row => {
         if(row.length!=0) {
             for(let j=0;j<row.length;j++) {
@@ -198,44 +208,44 @@ app.post("/itemperday",isMessSake, function(req, res) {
         }
         timers.setTimeout( function(){
             let total=0;
-    let itemTotal=0;
-    ItemPerDay.findAll({
-        attributes: ["id", "qty"]
-    }).then(row => {
-        for(let i=0;i<row.length;i++)
-            {
-                itemTotal=0;
-                Item.findAll({
-                    attributes: ["name", "price"],
-                    where: {id: row[i].dataValues.id}
-                }).then(row1 => {
-                    itemTotal = (row1[0].dataValues.price*row[i].dataValues.qty);
-                    total += itemTotal;
-                });
-            }
-
-        timers.setTimeout(() => {
-            dailyBill.findAll({
-                where:{date : new Date().toDateString()}
+            let itemTotal=0;
+            ItemPerDay.findAll({
+                attributes: ["id", "qty"]
             }).then(row => {
-                if(row.length!=0) {
-                    dailyBill.update({totalBill: total}, {where : {
-                        date : row[0].dataValues.date
-                    }});
-                } else {
-
-                    dailyBill.create({
-                        date:new Date().toDateString(),
-                        month:
-                        new Date().toDateString().split(" ")[1],
-                        totalBill: total
-                    }).then(row => {
-
+                for(let i=0;i<row.length;i++)
+                {
+                    itemTotal=0;
+                    Item.findAll({
+                        attributes: ["name", "price"],
+                        where: {id: row[i].dataValues.id}
+                    }).then(row1 => {
+                        itemTotal = (row1[0].dataValues.price*row[i].dataValues.qty);
+                        total += itemTotal;
                     });
                 }
-            });
-        }, 200);
-    });},200);
+
+                timers.setTimeout(() => {
+                    dailyBill.findAll({
+                        where:{date : new Date().toDateString()}
+                    }).then(row => {
+                        if(row.length!=0) {
+                            dailyBill.update({totalBill: total}, {where : {
+                                date : row[0].dataValues.date
+                            }});
+                        } else {
+
+                            dailyBill.create({
+                                date:new Date().toDateString(),
+                                month:
+                                new Date().toDateString().split(" ")[1],
+                                totalBill: total
+                            }).then(row => {
+
+                            });
+                        }
+                    });
+                }, 200);
+            });},200);
         res.redirect('/');
     },4000)
 
@@ -410,9 +420,9 @@ app.get("/newitem", function(req, res) {
 app.post("/newitem",isMessSake, function(req, res){
     req.body.rate.name = common.capitalizeAllWords(req.body.rate.name);
     Item.create(req.body.rate).then(row => {
-        let s={
-            qty:0,
-            itemId:row.dataValues.id
+        let s = {
+            qty: 0,
+            itemId: row.dataValues.id
         }
         Storage.create(s).then(row1 =>{
         })

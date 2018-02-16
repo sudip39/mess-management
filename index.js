@@ -525,6 +525,7 @@ function isMessSake(req,res,next) {
 }
 
 
-app.listen(8080,"localhost", function(){
-    console.log("The Mess server has Started!!!");
-});
+app.listen(app.get('port'), function() {
+    console.log('Node app is running on port', app.get('port'));
+  });
+  

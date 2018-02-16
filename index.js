@@ -13,7 +13,8 @@ const express = require('express'),
       Order = require('./models/order'),
       Worker = require('./models/worker'),
       Storage = require('./models/storage'),
-      Extras = require('./models/extras');
+      Extras = require('./models/extras'),
+      MonthlyBill = require('./models/monthlybill');
 
 
 var f=0;
@@ -162,7 +163,7 @@ app.post("/itemperday",isMessSake, function(req, res) {
     let k=Items.length;
     for(let i=0;i<m;i++)
     {
-        Items.push({ id:uItems[i]['id'],
+        Items.push({ id:uItems[i]['itemId'],
                         qty:uItems[i]['qty']
                         });
     }
@@ -315,9 +316,61 @@ app.post("/order", isMessSake, function(req,res){
                     {qty:parseInt(items[i].qty)+s[0].dataValues.qty},
                     { where: {itemId:parseInt(items[i].itemId)} }
                 );
+                let month= new Date().toDateString().split(" ")[1];
+                let nameArr={name: [],total: [], sum: 0};
+
+                Order.findAll({
+                    where: {month: month},
+                    group: ['supplierId'],
+                    attributes: [[orm.fn('sum', orm.literal('qty * rate')), 'totalPrice']],
+                    raw: true,
+                    include: [{
+                        model: Supplier,
+                        attributes: ['name'],
+                        required: true
+                    }]
+                }).then(r => {
+                    for(let i = 0; i < r.length; i++) {
+                        nameArr.name[i] = r[i]['supplier.name'];
+                        nameArr.total[i] = r[i].totalPrice;
+                        nameArr.sum += r[i].totalPrice;
+                    }
+                    Worker.findAll().then(row=>{
+                        let workerSum = 0;
+                        for(let i = 0; i < row.length; i++) {
+                            workerSum+=row[i].salary;
+                        }
+                        Extras.findAll().then(row => {
+                            let esum = 0;
+                            for(let i = 0; i < row.length; i++) {
+                                esum += row[i].bill;
+                            }
+                           
+                           let year = parseInt(new Date().toDateString().split(" ")[3]);
+                           let bill=esum+workerSum+nameArr.sum;
+                            MonthlyBill.update({
+                                bill:bill},
+                               { where:{ month: month } }
+
+                            ).then(row=>{
+                                console.log(row);
+                                if(row[0]==0)
+                                {
+                                    MonthlyBill.create({
+                                     month:month,
+                                     year:year,
+                                     bill:bill   
+                                    
+                                    });
+                                }
+                            })
+                        });
+                    });
+                });
             });
 
         });
+        
     }
     res.redirect('/');
 });
@@ -418,6 +471,7 @@ app.get("/newitem", function(req, res) {
 
 
 app.post("/newitem",isMessSake, function(req, res){
+     
     req.body.rate.name = common.capitalizeAllWords(req.body.rate.name);
     Item.create(req.body.rate).then(row => {
         let s = {
@@ -427,7 +481,7 @@ app.post("/newitem",isMessSake, function(req, res){
         Storage.create(s).then(row1 =>{
         })
     });
-    res.redirect('/');
+    res.redirect('/newitem');
 });
 function isHome(req,res,next){
     User.findAll().then(row =>{

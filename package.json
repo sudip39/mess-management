@@ -21,6 +21,7 @@
     "materialize": "^1.0.0",
     "mysql": "^2.15.0",
     "mysql2": "^1.5.1",
+    "passport-local-sequelize": "^0.8.0",
     "sequelize": "^4.32.1"
   }
 }

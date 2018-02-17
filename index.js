@@ -313,7 +313,7 @@ app.post("/order", isMessSake, function(req,res){
                 { where: {itemId:parseInt(items[i].itemId)} }
             ).then(s =>{
                 Storage.update(
-                    {qty:parseInt(items[i].qty)+s[0].dataValues.qty},
+                    {qty:parseFloat(items[i].qty)+s[0].dataValues.qty},
                     { where: {itemId:parseInt(items[i].itemId)} }
                 );
                 let month= new Date().toDateString().split(" ")[1];
@@ -353,7 +353,7 @@ app.post("/order", isMessSake, function(req,res){
                                { where:{ month: month } }
 
                             ).then(row=>{
-                                console.log(row);
+                                console.log(row[0]);
                                 if(row[0]==0)
                                 {
                                     MonthlyBill.create({
@@ -525,11 +525,11 @@ function isMessSake(req,res,next) {
 }
 
 
-app.listen(app.get('port'), function() {
-    console.log('Node app is running on port', app.get('port'));
-  });
+// app.listen(app.get('port'), function() {
+//     console.log('Node app is running on port', app.get('port'));
+//   });
 
 
-// app.listen(8080,"localhost", function(){
-//     console.log("The Mess server has Started!!!");
-// });
+app.listen(8080,"localhost", function(){
+    console.log("The Mess server has Started!!!");
+});

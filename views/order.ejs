@@ -16,6 +16,7 @@
         <option value="none">Select an item</option>
         <% for (let i = 0; i < item.length; ++i) { %>
             <option value='{"itemId": <%= item[i].dataValues.id %>,
+                            "qtype": "<%= item[i].dataValues.qtype %>",
                            "price": <%= item[i].dataValues.price %>}'><%= item[i].dataValues.name %>
             </option>
         <% } %>
@@ -63,6 +64,7 @@
          let currentVal = JSON.parse(current.val());
          let rate = parseFloat(currentVal.price);
          let id = parseFloat(currentVal.itemId);
+         let type = currentVal.qtype;
          $("table").append("<tr><td>" + current.text() + "</td><td>" +
                            "<input hidden='true' type='text' " + "name='item[" + i + "][itemId]' value =" + id + " />" +
                            "<input hidden='true' type='text' name='item[" + i + "][rate]'" + " value='" + rate + "' />" +
@@ -70,6 +72,11 @@
                            "<input type='text' required id='orangeForm-"+i+"' name='item[" + i + "][qty]' " + " autocomplete='off' required />" +
                            "<label for='orangeForm-"+i+"'>Quantity</label>" +
                            "</div></td>" +
+                           "<td>"+
+                            "<h4>"+
+                            "/"+type +
+                           "</h4>"+
+                            "</td>"+
                            "<td><div class='md-form'>" +
                            "<a class=' remove-btn btn-floating btn-sm btn-danger'>" +
                            "<i class='fa fa-close'></i></a>" +

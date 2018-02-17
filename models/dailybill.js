@@ -2,8 +2,8 @@ const orm = require('sequelize')
 
 
 // start connection
-const mess = new orm('sql12221611', 'sql12221611', 'Yq9k6Ak93r', {
-    host: 'sql12.freemysqlhosting.net',
+const mess = new orm('mess', 'root', 'root', {
+    host: 'localhost',
     dialect: 'mysql',
     pool: {
         max: 5,

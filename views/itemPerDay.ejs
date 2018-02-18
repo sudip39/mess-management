@@ -15,7 +15,7 @@
                     <tr>
                         <td class="addtocart"><%= rate[i].dataValues.name %></td>
                         <td>
-                            <input type="text" name="item[<%= i %>][id]" value="<%= rate[i].dataValues.id %>" hidden=true>
+                            <input type="text" name="item[<%= i %>][itemId]" value="<%= rate[i].dataValues.id %>" hidden=true>
                             <input type="text" name="item[<%= i %>][qty]" value="0">
                         </td>
                         <td>Rs<%= rate[i].dataValues.price %>/<%= rate[i].dataValues.qtype %></td>
@@ -26,7 +26,7 @@
         </table>
         <div class="md-form">
                 <table class="uncommon" style="width: 100%"></table>
-            </div> 
+            </div>
         <div class="md-form"   >
             <select id="items" class="full-width" style="width:100%;">
                 <option value="none">Select an item</option>
@@ -59,7 +59,7 @@ $('document').ready(function(){
          let current = $(this).children(":selected");
          if (current == 'none')
              return 0;
-            
+
          let currentVal = JSON.parse(current.val());
          let rate = parseFloat(currentVal.price);
          let id = parseFloat(currentVal.itemId);
@@ -75,7 +75,7 @@ $('document').ready(function(){
                            "</div></td></tr>");
          k++;
      })
-     
+
      $(document).on('click', '.remove-btn', function(e) {
          e.preventDefault();
          $(this).parent().parent().parent().remove();

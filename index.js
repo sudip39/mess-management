@@ -25,7 +25,11 @@ app.use(bodyParser.urlencoded({extended: true}));
 // setup assets location
 app.use(express.static(__dirname + "/public"));
 
-
+app.get("/test",function(req,res){
+    Item.findAll().then(row=>{
+        res.send(row);
+    })
+})
 app.get("/", function(req, res) {
     if(f==0)
         res.render("home.ejs",{error: "", success: ""});
@@ -122,13 +126,13 @@ app.get("/todaysBill", function(req, res) {
     var bilArr = [];
 
     ItemPerDay.findAll({
-        attributes: ["id", "qty"]
+        attributes: ["itemId", "qty"]
     }).then(row => {
         for(let i = 0; i < row.length; i++) {
             itemTotal=0;
             Item.findAll({
                 attributes: ["name", "price"],
-                where: {id: row[i].dataValues.id}
+                where: {id: row[i].dataValues.itemId}
             }).then(row1 => {
                 itemTotal = (row1[0].dataValues.price*row[i].dataValues.qty);
                 total += itemTotal;
@@ -156,16 +160,17 @@ app.get("/itemperday", function(req, res) {
 
 
 app.post("/itemperday",isMessSake, function(req, res) {
-    
-    let Items = req.body.item;
-    let uItems = req.body.uitem;
+    let Items = common.convertObjectToArray(req.body.item);
+    let uItems = common.convertObjectToArray(req.body.uitem);
     let m=uItems.length;
     let k=Items.length;
-    for(let i=0;i<m;i++)
-    {
-        Items.push({ id:uItems[i]['itemId'],
-                        qty:uItems[i]['qty']
-                        });
+    console.log(Items);
+    console.log(uItems);
+    for(let i=0;i<m;i++) {
+        Items.push({
+            itemId: uItems[i].itemId,
+            qty: uItems[i].qty
+        });
     }
     ItemPerDay.findAll().then(row => {
         if(row.length!=0) {
@@ -183,22 +188,22 @@ app.post("/itemperday",isMessSake, function(req, res) {
         for (let i = 0; i < Items.length; ++i) {
             if (Items[i]['qty'] != 0) {
                 Storage.findAll(
-                    { where: {itemId:parseInt(Items[i].id)} }
+                    { where: {itemId:parseInt(Items[i].itemId)} }
                 ).then(s =>{
                     Storage.update(
                         {qty:s[0].dataValues.qty-Items[i]['qty']},
-                        { where: {itemId:parseInt(Items[i]['id'])} }
+                        { where: {itemId:parseInt(Items[i]['itemId'])} }
                     );
                 });
                 ItemPerDay.findAll({
-                    attributes: ["id", "qty","createdAt"],
-                    where: { id: parseInt(Items[i]['id'])}
+                    attributes: ["itemId", "qty","createdAt"],
+                    where: { itemId: parseInt(Items[i]['itemId'])}
 
                 }).then(row => {
                     if (row.length != 0) {
                         ItemPerDay.update(
                             {qty: parseFloat(Items[i]['qty']) + row[0].dataValues.qty},
-                            {where: {id: parseInt(Items[i]['id'])}
+                            {where: {itemId: parseInt(Items[i]['itemId'])}
                             });
                     } else {
                         ItemPerDay.create(Items[i]);
@@ -211,14 +216,14 @@ app.post("/itemperday",isMessSake, function(req, res) {
             let total=0;
             let itemTotal=0;
             ItemPerDay.findAll({
-                attributes: ["id", "qty"]
+                attributes: ["itemId", "qty"]
             }).then(row => {
                 for(let i=0;i<row.length;i++)
                 {
                     itemTotal=0;
                     Item.findAll({
                         attributes: ["name", "price"],
-                        where: {id: row[i].dataValues.id}
+                        where: {id: row[i].dataValues.itemId}
                     }).then(row1 => {
                         itemTotal = (row1[0].dataValues.price*row[i].dataValues.qty);
                         total += itemTotal;
@@ -248,7 +253,7 @@ app.post("/itemperday",isMessSake, function(req, res) {
                 }, 200);
             });},200);
         res.redirect('/');
-    },4000)
+    },4000);
 
 });
 
@@ -345,7 +350,7 @@ app.post("/order", isMessSake, function(req,res){
                             for(let i = 0; i < row.length; i++) {
                                 esum += row[i].bill;
                             }
-                           
+
                            let year = parseInt(new Date().toDateString().split(" ")[3]);
                            let bill=esum+workerSum+nameArr.sum;
                             MonthlyBill.update({
@@ -359,8 +364,8 @@ app.post("/order", isMessSake, function(req,res){
                                     MonthlyBill.create({
                                      month:month,
                                      year:year,
-                                     bill:bill   
-                                    
+                                     bill:bill
+
                                     });
                                 }
                             })
@@ -370,7 +375,7 @@ app.post("/order", isMessSake, function(req,res){
             });
 
         });
-        
+
     }
     res.redirect('/');
 });
@@ -471,7 +476,7 @@ app.get("/newitem", function(req, res) {
 
 
 app.post("/newitem",isMessSake, function(req, res){
-     
+
     req.body.rate.name = common.capitalizeAllWords(req.body.rate.name);
     Item.create(req.body.rate).then(row => {
         let s = {

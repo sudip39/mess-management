@@ -1,17 +1,8 @@
 const orm = require('sequelize');
 const Item = require('./newitem');
 
-const mess = new orm('mess', 'root', 'root', {
-    host: 'localhost',
-    dialect: 'mysql',
-    pool: {
-        max: 5,
-        min: 0,
-        acquire: 30000,
-        idle: 10000
-    },
-    operatorsAliases: false
-});
+const mess = require('./dbConnection/mess');
+
 
 const Storage = mess.define('storage', {
     qty: orm.FLOAT

@@ -1,5 +1,18 @@
 <% include ./partials/header %>
+<%
+function precision(x)
+{
+    let m=parseInt(x);
+    let n=parseInt(x*100);
+    let y;
+    y=n-(m*100);
+    y=y*0.01;
+    m=m+y;
+    return m;
 
+
+}
+%>
 <div class="container table-container">
     <table class="table">
         <thead>
@@ -10,7 +23,7 @@
             <%   for( let i=0; i<bill.name.length;i++) { %>
                 <tr>
                     <td><%= bill.name[i] %></td>
-                    <td><%=  bill.total[i] %></td>
+                    <td><%=  precision(bill.total[i]) %></td>
                 </tr>
             <% } %>
             <tr>
@@ -19,11 +32,11 @@
             </tr>
             <tr>
                 <td>Extra Charges</td>
-                <td><%= esum %></td>
+                <td><%= esum%></td>
             </tr>
             <tr>
                 <td>Total Bill</td>
-                <td><%=bill.sum+esum+wsum%></td>
+                <td><%=precision(bill.sum+esum+wsum)%></td>
             </tr>
         </tbody>
     </table>

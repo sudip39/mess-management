@@ -19,13 +19,15 @@ module.exports = {
         }).join(' ');
     },
     convertObjectToArray: function (obj) {
-        if (obj instanceof Array) {
-            return obj;
-        } else {
-            let retVal = [];
-            for (const [key, val] of Object.entries(obj))
-                retVal.push(val);
-            return retVal;
+        if(typeof obj !='undefined'){
+            if (obj instanceof Array) {
+                return obj;
+            } else {
+                let retVal = [];
+                for (const [key, val] of Object.entries(obj))
+                    retVal.push(val);
+                return retVal;
+            }
         }
     }
 }

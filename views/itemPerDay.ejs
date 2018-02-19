@@ -5,6 +5,7 @@
         <table class="table ">
             <thead>
                 <tr>
+
                     <th>Item Name</th>
                     <th>Quantity</th>
                 </tr>
@@ -12,28 +13,28 @@
             <tbody >
                 <% for (let i = 0; i < rate.length; ++i) { %>
                     <% if(rate[i].dataValues.common==1) {%>
-                    <tr>
-                        <td class="addtocart"><%= rate[i].dataValues.name %></td>
-                        <td>
-                            <input type="text" name="item[<%= i %>][itemId]" value="<%= rate[i].dataValues.id %>" hidden=true>
-                            <input type="text" name="item[<%= i %>][qty]" value="0">
-                        </td>
-                        <td>Rs<%= rate[i].dataValues.price %>/<%= rate[i].dataValues.qtype %></td>
-                    </tr>
+                        <tr>
+                            <td class="addtocart"><%= rate[i].dataValues.name %></td>
+                            <td>
+                                <input type="text" name="item[<%= i %>][itemId]" value="<%= rate[i].dataValues.id %>" hidden=true>
+                                <input type="text" name="item[<%= i %>][qty]" value="0">
+                            </td>
+                            <td>Rs<%= rate[i].dataValues.price %>/<%= rate[i].dataValues.qtype %></td>
+                        </tr>
                     <% } %>
                 <% } %>
             </tbody>
         </table>
         <div class="md-form">
-                <table class="uncommon" style="width: 100%"></table>
-            </div>
+            <table class="uncommon" style="width: 100%"></table>
+        </div>
         <div class="md-form"   >
             <select id="items" class="full-width" style="width:100%;">
                 <option value="none">Select an item</option>
                 <% for (let i = 0; i < rate.length; ++i) { %>
                     <% if(rate[i].dataValues.common==0) {%>
                         <option value='{"itemId": <%= rate[i].dataValues.id %>,
-                                    "price": <%= rate[i].dataValues.price %>}'><%= rate[i].dataValues.name %>
+                                       "price": <%= rate[i].dataValues.price %>}'><%= rate[i].dataValues.name %>
                         </option>
                     <% } %>
                 <% } %>
@@ -52,9 +53,9 @@
 
 <% include partials/footer %>
 <script>
-   let k=0;
-   console.log(k);
-$('document').ready(function(){
+ let k=0;
+ console.log(k);
+ $('document').ready(function(){
      $("select#items").change(function () {
          let current = $(this).children(":selected");
          if (current == 'none')
@@ -64,15 +65,15 @@ $('document').ready(function(){
          let rate = parseFloat(currentVal.price);
          let id = parseFloat(currentVal.itemId);
          $("table.uncommon").append("<tr><td>" + current.text() + "</td><td>" +
-                            "<input hidden='true' type='text' " + "name='uitem[" + k + "][itemId]' value =" + id + " >" +
-                           "<div class='md-form'>" +
-                            "<label for='orangeForm-"+k+"'>Quantity</label>" +
-                            "<input type='text' required id='orangeForm-"+k+"' name='uitem[" + k + "][qty]' " + " autocomplete='off' required />" +
-                           "</div></td>" +
-                           "<td><div class='md-form'>" +
-                           "<a class=' remove-btn btn-floating btn-sm btn-danger'>" +
-                           "<i class='fa fa-window-close'></i></a>" +
-                           "</div></td></tr>");
+                                    "<input hidden='true' type='text' " + "name='uitem[" + k + "][itemId]' value =" + id + " >" +
+                                    "<div class='md-form'>" +
+                                    "<label for='orangeForm-"+k+"'>Quantity</label>" +
+                                    "<input type='text' required id='orangeForm-"+k+"' name='uitem[" + k + "][qty]' " + " autocomplete='off' required />" +
+                                    "</div></td>" +
+                                    "<td><div class='md-form'>" +
+                                    "<a class=' remove-btn btn-floating btn-sm btn-danger'>" +
+                                    "<i class='fa fa-window-close'></i></a>" +
+                                    "</div></td></tr>");
          k++;
      })
 

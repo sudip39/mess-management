@@ -8,6 +8,7 @@
     <table class="table table-hover table-bordered">
         <thead>
             <tr>
+                <th>#</th>
                 <th>Item Name</th>
                 <th>Rate</th>
                 <th>Quantity</th>
@@ -17,6 +18,7 @@
         <tbody>
             <% for (let i = 0; i < items.length; ++i) { %>
                 <tr>
+                    <td><%=i+1 %></td>
                     <td><%= items[i].name %></td>
                     <td><%= items[i].rate %></td>
                     <td><%= items[i].qty %></td>
@@ -24,7 +26,7 @@
                 </tr>
             <% } %>
             <tr>
-                <td colspan="3">Total Price</td>
+                <td colspan="4">Total Price</td>
                 <td><%= total %></td>
             </tr>
         </tbody>

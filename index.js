@@ -161,24 +161,30 @@ app.get("/itemperday", function(req, res) {
 
 app.post("/itemperday",isMessSake, function(req, res) {
     let Items = common.convertObjectToArray(req.body.item);
-    let uItems = common.convertObjectToArray(req.body.uitem);
-    let m=uItems.length;
-    let k=Items.length;
-    console.log(Items);
-    console.log(uItems);
-    for(let i=0;i<m;i++) {
-        Items.push({
-            itemId: uItems[i].itemId,
-            qty: uItems[i].qty
-        });
+    if(typeof req.body.uitem !='undefined'){
+        let uItems = common.convertObjectToArray(req.body.uitem);
+        let m=uItems.length;
+        let k=Items.length;
+        console.log(Items);
+        console.log(uItems);
+        for(let i=0;i<m;i++) {
+            Items.push({
+                itemId: uItems[i].itemId,
+                qty: uItems[i].qty
+            });
+        }
     }
     ItemPerDay.findAll().then(row => {
         if(row.length!=0) {
             for(let j=0;j<row.length;j++) {
                 let rowDate = row[j].dataValues.createdAt;
                 if(rowDate.toDateString() !==new Date().toDateString()) {
-                    ItemPerDay.destroy();
-                    break;
+                    console.log("YEs Fuck");
+                    ItemPerDay.destroy(
+                       { where: {},
+                        truncate: true
+                       });
+
                 }
             }
         }
@@ -351,24 +357,24 @@ app.post("/order", isMessSake, function(req,res){
                                 esum += row[i].bill;
                             }
 
-                           let year = parseInt(new Date().toDateString().split(" ")[3]);
-                           let bill=esum+workerSum+nameArr.sum;
+                            let year = parseInt(new Date().toDateString().split(" ")[3]);
+                            let bill=esum+workerSum+nameArr.sum;
                             MonthlyBill.update({
                                 bill:bill},
-                               { where:{ month: month } }
+                                               { where:{ month: month } }
 
-                            ).then(row=>{
-                                console.log(row[0]);
-                                if(row[0]==0)
-                                {
-                                    MonthlyBill.create({
-                                     month:month,
-                                     year:year,
-                                     bill:bill
+                                              ).then(row=>{
+                                                  console.log(row[0]);
+                                                  if(row[0]==0)
+                                                  {
+                                                      MonthlyBill.create({
+                                                          month:month,
+                                                          year:year,
+                                                          bill:bill
 
-                                    });
-                                }
-                            })
+                                                      });
+                                                  }
+                                              })
                         });
                     });
                 });
@@ -496,15 +502,15 @@ function isHome(req,res,next){
             bcrypt.compare(req.body.password,
                            row[0].dataValues.password,
                            function(err, result) {
-                if(result==true) {
-                    f=1;
-                    res.redirect('/printOut');
-                    next();
-                } else {
-                    f=2;
-                    res.redirect('/');
-                }
-            });
+                               if(result==true) {
+                                   f=1;
+                                   res.redirect('/printOut');
+                                   next();
+                               } else {
+                                   f=2;
+                                   res.redirect('/');
+                               }
+                           });
         }
     })
 
@@ -517,14 +523,14 @@ function isMessSake(req,res,next) {
             bcrypt.compare(req.body.password,
                            row[0].dataValues.password,
                            function(err, result) {
-                if(result == true) {
-                    f=1;
-                    next();
-                } else {
-                    f=2;
-                    res.redirect('/');
-                }
-            });
+                               if(result == true) {
+                                   f=1;
+                                   next();
+                               } else {
+                                   f=2;
+                                   res.redirect('/');
+                               }
+                           });
         }
     })
 }

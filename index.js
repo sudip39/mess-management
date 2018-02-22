@@ -179,7 +179,7 @@ app.post("/itemperday",isMessSake, function(req, res) {
             for(let j=0;j<row.length;j++) {
                 let rowDate = row[j].dataValues.createdAt;
                 if(rowDate.toDateString() !==new Date().toDateString()) {
-                    console.log("YEs Fuck");
+                   
                     ItemPerDay.destroy(
                        { where: {},
                         truncate: true

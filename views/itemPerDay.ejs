@@ -34,6 +34,7 @@
                 <% for (let i = 0; i < rate.length; ++i) { %>
                     <% if(rate[i].dataValues.common==0) {%>
                         <option value='{"itemId": <%= rate[i].dataValues.id %>,
+                                        "qtype": "<%= rate[i].dataValues.qtype %>",
                                        "price": <%= rate[i].dataValues.price %>}'><%= rate[i].dataValues.name %>
                         </option>
                     <% } %>
@@ -64,13 +65,19 @@
          let currentVal = JSON.parse(current.val());
          let rate = parseFloat(currentVal.price);
          let id = parseFloat(currentVal.itemId);
+         let type = currentVal.qtype;
          $("table.uncommon").append("<tr><td>" + current.text() + "</td><td>" +
                                     "<input hidden='true' type='text' " + "name='uitem[" + k + "][itemId]' value =" + id + " >" +
                                     "<div class='md-form'>" +
                                     "<label for='orangeForm-"+k+"'>Quantity</label>" +
                                     "<input type='text' required id='orangeForm-"+k+"' name='uitem[" + k + "][qty]' " + " autocomplete='off' required />" +
                                     "</div></td>" +
-                                    "<td><div class='md-form'>" +
+                                    "<td>"+
+                                        "<h4>"+
+                                        type +
+                                    "</h4>"+
+                                        "</td>"+
+                                        "<td><div class='md-form'>" +
                                     "<a class=' remove-btn btn-floating btn-sm btn-danger'>" +
                                     "<i class='fa fa-window-close'></i></a>" +
                                     "</div></td></tr>");

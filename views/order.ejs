@@ -24,10 +24,10 @@
 </div>
 <div class="container myresponsive">
     <form action="/order" method="post" class="order-form">
-        <input name="supplierId" type="text" value="" hidden="true" />
+        <input name="supplierId" type="text" value="" required hidden="true" />
         <div class="container">
             <div class="md-form">
-                <table style="width: 100%"></table>
+                <table id="itemlist" style="width: 100%"></table>
             </div>
             <div class="md-form">
                 <i class="fa fa-calendar-minus prefix grey-text"></i>
@@ -40,7 +40,7 @@
                 <label for="orangeForm-pass">Your password</label>
             </div>
             <div class="text-center">
-                <button class="btn btn-default">Submit</button>
+                <button id="sub" class="btn btn-default">Submit</button>
             </div>
         </div>
     </form>
@@ -51,42 +51,53 @@
 
  $(document).ready(function () {
 
-     $("select#supId").change(function () {
-         let x = $(this).val();
-         console.log(x);
-         $("input[name='supplierId']").val('' + x);
-     })
+    function disableSubmit() {
+        if ($("select#supId").val() == 'none' || $("table#itemlist").children().length == 0)
+            btn.disabled = true;
+        else
+            btn.disabled = false;
+    }
 
-     $("select#items").change(function () {
-         let current = $(this).children(":selected");
-         if (current == 'none')
-             return 0;
-         let currentVal = JSON.parse(current.val());
-         let rate = parseFloat(currentVal.price);
-         let id = parseFloat(currentVal.itemId);
-         let type = currentVal.qtype;
-         $("table").append("<tr><td>" + current.text() + "</td><td>" +
-                           "<input hidden='true' type='text' " + "name='item[" + i + "][itemId]' value =" + id + " />" +
-                           "<input hidden='true' type='text' name='item[" + i + "][rate]'" + " value='" + rate + "' />" +
-                           "<div class='md-form'>" +
-                           "<input type='text' required id='orangeForm-"+i+"' name='item[" + i + "][qty]' " + " autocomplete='off' required />" +
-                           "<label for='orangeForm-"+i+"'>Quantity</label>" +
-                           "</div></td>" +
-                           "<td>"+
-                            "<h4>"+
-                            type +
-                           "</h4>"+
-                            "</td>"+
-                           "<td><div class='md-form'>" +
-                           "<a class=' remove-btn btn-floating btn-sm btn-danger'>" +
-                           "<i class='fa fa-close'></i></a>" +
-                           "</div></td></tr>");
-         i++;
-     })
-     $(document).on('click', '.remove-btn', function(e) {
-         e.preventDefault();
-         $(this).parent().parent().parent().remove();
-         $(this).remove();
-     })
- });
+    $("select#supId").change(function () {
+        let x = $(this).val();
+        $("input[name='supplierId']").val('' + x);
+        disableSubmit();
+    })
+
+    $("select#items").change(function () {
+        let current = $(this).children(":selected");
+        if (current == 'none')
+            return 0;
+        let currentVal = JSON.parse(current.val());
+        let rate = parseFloat(currentVal.price);
+        let id = parseFloat(currentVal.itemId);
+        let type = currentVal.qtype;
+        $("table").append("<tr><td>" + current.text() + "</td><td>" +
+                        "<input hidden='true' type='text' " + "name='item[" + i + "][itemId]' value =" + id + " />" +
+                        "<input hidden='true' type='text' name='item[" + i + "][rate]'" + " value='" + rate + "' />" +
+                        "<div class='md-form'>" +
+                        "<input type='text' required id='orangeForm-"+i+"' name='item[" + i + "][qty]' " + " autocomplete='off' required />" +
+                        "<label for='orangeForm-"+i+"'>Quantity</label>" +
+                        "</div></td>" +
+                        "<td>"+
+                        "<h4>"+
+                        type +
+                        "</h4>"+
+                        "</td>"+
+                        "<td><div class='md-form'>" +
+                        "<a class='remove-btn btn-floating btn-sm btn-danger'>" +
+                        "<i class='fa fa-times ' style='margin-top:30%;margin-left:35%;' ></i></a>" +
+                        "</div></td></tr>");
+        i++;
+        disableSubmit();
+    });
+    let btn = $("button#sub")[0]
+    btn.disabled = true;
+    $(document).on('click', '.remove-btn', function(e) {
+        e.preventDefault();
+        row = $(this).parent().parent().parent().remove();
+        $(this).remove();
+        disableSubmit();
+    });
+});
 </script>

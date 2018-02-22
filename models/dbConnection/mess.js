@@ -1,6 +1,6 @@
 const orm=require('sequelize');
 
-const mess = new orm('messTrial', 'root', 'root', {
+const mess = new orm('mess', 'root', 'root', {
     host: 'localhost',
     dialect: 'mysql',
     pool: {

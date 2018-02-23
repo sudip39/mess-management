@@ -14,7 +14,8 @@ const express = require('express'),
       Worker = require('./models/worker'),
       Storage = require('./models/storage'),
       Extras = require('./models/extras'),
-      MonthlyBill = require('./models/monthlybill');
+      MonthlyBill = require('./models/monthlybill'),
+      messConn = require('./models/dbConnection/mess.js');
 
 
 var f=0;
@@ -26,9 +27,23 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static(__dirname + "/public"));
 
 app.get("/test",function(req,res){
-    Item.findAll().then(row=>{
-        res.send(row);
+    let month="Feb";
+    let year=2018;
+    messConn.query(
+        "select sum(orders.qty*orders.rate) as totalPrice ,"+
+        " suppliers.name from orders INNER JOIN suppliers on orders.supplierId=suppliers.id" +
+              " and orders.month= " +"'"+month+"'"+
+              " and year(orders.createdAt)="+year+
+              " group by supplierId;"
+   
+    ).then(r=> {
+        let rr=JSON.stringify(r);
+        rr=JSON.parse(rr);
+        console.log(rr);
+        res.send(r[0][0][0]);
     })
+
+
 })
 app.get("/", function(req, res) {
     if(f==0)
@@ -179,7 +194,6 @@ app.post("/itemperday",isMessSake, function(req, res) {
             for(let j=0;j<row.length;j++) {
                 let rowDate = row[j].dataValues.createdAt;
                 if(rowDate.toDateString() !==new Date().toDateString()) {
-                   
                     ItemPerDay.destroy(
                        { where: {},
                         truncate: true
@@ -403,25 +417,28 @@ app.get("/extradetails",function(req,res){
         res.render("extradetails.ejs",{extra:extra});
     });
 });
-
-
-app.get("/actualbill",function(req,res){
-    let month=new Date().toDateString().split(" ")[1];
+app.get("/actualbill/:month/:year",function(req,res){
+    console.log(req.params.month);
+    let month=req.params.month;
+    let year=req.params.year;
     let nameArr={name: [],total: [], sum: 0};
 
-    Order.findAll({
-        where: {month: month},
-        group: ['supplierId'],
-        attributes: [[orm.fn('sum', orm.literal('qty * rate')), 'totalPrice']],
-        raw: true,
-        include: [{
-            model: Supplier,
-            attributes: ['name'],
-            required: true
-        }]
-    }).then(r => {
+
+    messConn.query(
+            "select sum(orders.qty*orders.rate) as totalPrice ,"+
+            "suppliers.name from orders INNER JOIN suppliers on orders.supplierId=suppliers.id" +
+            " where orders.month= " +"'"+month+"'"+
+            " and year(orders.createdAt)="+year+
+            " group by supplierId;"
+
+    ).then(row=> {
+         row=JSON.stringify(row);
+        row=JSON.parse(row);
+        let r=row[0];
+        
+    
         for(let i = 0; i < r.length; i++) {
-            nameArr.name[i] = r[i]['supplier.name'];
+            nameArr.name[i] = r[i]['name'];
             nameArr.total[i] = r[i].totalPrice;
             nameArr.sum += r[i].totalPrice;
         }
@@ -435,7 +452,7 @@ app.get("/actualbill",function(req,res){
                 for(let i = 0; i < row.length; i++) {
                     esum += row[i].bill;
                 }
-                res.render('actualbill.ejs', {
+                res.send( {
                     bill: nameArr,
                     wsum: workerSum,
                     esum: esum
@@ -443,6 +460,12 @@ app.get("/actualbill",function(req,res){
             });
         });
     });
+
+})
+
+app.get("/actualbill",function(req,res){
+
+res.render('actualbill.ejs');
 });
 
 

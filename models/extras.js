@@ -11,6 +11,7 @@ const mess = require('./dbConnection/mess');
  * It will have total bill per unique date
  */
 const Extras = mess.define('extra', {
+    
     reason:orm.STRING,
     bill: orm.FLOAT
 });

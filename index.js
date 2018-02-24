@@ -254,19 +254,19 @@ app.post("/itemperday",isMessSake, function(req, res) {
                     dailyBill.findAll({
                         where:{date : new Date().toDateString()}
                     }).then(row => {
+                        console.log(row);
                         if(row.length!=0) {
                             dailyBill.update({totalBill: total}, {where : {
                                 date : row[0].dataValues.date
-                            }});
+                            }}).then(ro =>{
+                                console.log(ro);
+                            });
                         } else {
-
                             dailyBill.create({
                                 date:new Date().toDateString(),
-                                month:
-                                new Date().toDateString().split(" ")[1],
                                 totalBill: total
-                            }).then(row => {
-
+                            }).then(ro => {
+                                console.log(ro);
                             });
                         }
                     });

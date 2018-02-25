@@ -1,23 +1,84 @@
 <% include ./partials/header %>
 
+<div class="container">
+    <div class="md-form" style="margin-left:10%; margin-top:3%; width:20%; float:left;display:inline-block;">
+        <select name="month" id="month" style="width:100%;">
+            <option value="1">Jan</option>
+            <option value="2">February</option>
+            <option value="3">March</option>
+            <option value="4">April</option>
+            <option value="5">May</option>
+            <option value="6">June</option>
+            <option value="7">July</option>
+            <option value="8">August</option>
+            <option value="9">September</option>
+            <option value="10">October</option>
+            <option value="11">November</option>
+            <option value="12">December</option>
+        </select>
+    </div>
+
+    <div class="md-form"style="margin-left:5%; margin-top:3%; width:20%; float:left;display:inline-block;">
+        <select  id="year" style="width:100%; text-align:center;"></select>
+    </div>
+    <div class="md-form"style="margin-top:1%;  float:left;display:inline-block;">
+            <button id="getbill" class="btn btn-info" type="submit">search</button>
+    </div>
+</div>
 <div class="container table-container">
     <table class="table">
-        <thead>
-            <th>Date</th>
-            <th>Expenditure</th>
-        </thead>
-        <tbody>
-            <%   for( let i=0; i<record.length;i++) { %>
-                <tr>
-                    <td><%= record[i].dataValues.date %></td>
-                    <td><%=  record[i].dataValues.totalBill %></td>
-                </tr>
-            <% } %>
-            <tr>
-                <td>Monthly Bill</td>
-                <td><%=total%></td>
-            </tr>
-        </tbody>
+    
     </table>
 </div>
+
 <% include ./partials/footer %>
+<script>
+        document.addEventListener('DOMContentLoaded', function () {
+        var start = 2018;
+        var end = new Date().getFullYear();
+        var options = "";
+        for(var year = start ; year <=end; year++){
+            options += "<option>"+ year +"</option>";
+        }
+        document.getElementById("year").innerHTML = options;
+    });
+    let year = "2018";
+        let month ="1";
+   
+        $('select#year').change(function(){
+            year= $(this).val();
+        })
+        $('select#month').change(function(){
+            month=$(this).val();
+        });
+       $("button#getbill").on("click", function () {
+            $.ajax({
+                type: 'GET',
+                url: '/dailybillrecords/'+month+'/'+year,
+                success: function(result) {
+                    console.log(result.record[0][0]);
+                   $('table').empty();
+                    if(result.record[0].length==0)
+                    {
+                       toastr["error"]("No records Found");
+                       setTimeout(function(){
+                           toastr.clear();
+                       },1500);
+                   
+                       return;
+                    }
+   
+                    var theaders="<thead><th>Date</th><th>Expenditure</th></thead>"
+                    var tbodys=theaders+"<tbody>";
+   
+                    for(let i=0;i<result.record[0].length;i++)
+                        {
+                            tbodys+="<tr><td>"+result.record[0][i].date+"</td> <td>" +result.record[0][i].totalBill+"</td></tr>";
+                        }
+                        tbodys+="<tr> <td>Monthly Bill</td><td>"+result.tot+"</td></tr></tbody>";
+                    $('table').empty().append(tbodys);
+                }
+            });
+   
+        });
+   </script>

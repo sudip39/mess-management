@@ -122,16 +122,27 @@ app.get("/itemrates", function(req, res) {
     });
 });
 
-
-app.get("/dailybillrecords",function(req,res){
-
-    dailyBill.findAll().then(bills => {
+app.get("/dailybillrecords/:month/:year",function(req,res){
+    let month =parseInt( req.params.month);
+    let year = req.params.year;
+    messConn.query("select * from dailyBills where month(createdAt)="+month+" and year(createdAt)="+year+";").then(bills => {
         let tot = 0;
-        for(i=0;i<bills.length;i++) {
-            tot+=bills[i].dataValues.totalBill;
+        bills=JSON.stringify(bills);
+        bills=JSON.parse(bills);
+       // console.log(bills);
+        for(i=0;i<bills[0].length;i++) {
+            tot+=bills[0][i].totalBill;
         }
-        res.render("records.ejs",{record :bills, total:tot});
-    })
+        
+
+        res.send({
+            record:bills,
+            tot:tot
+        })
+    });
+})
+app.get("/dailybillrecords",function(req,res){    
+        res.render("records.ejs");
 })
 
 

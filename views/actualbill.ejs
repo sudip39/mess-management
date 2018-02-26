@@ -87,9 +87,9 @@
                      }
                  console.log(result.esum);
                  console.log(result.wsum);
-                 tbodys+= "<tr><td>Worker's total salary</td><td>"+precision(result.wsum)+"</td></tr>";
+                
                  tbodys+="<tr><td>Extra Charges</td><td>"+ result.esum+"</td></tr>";
-                 tbodys+="<tr><td>Total Bill</td><td>"+precision(result.bill.sum+result.esum+result.wsum)+"</td></tr>";
+                 tbodys+="<tr><td>Total Bill</td><td>"+precision(result.bill.sum+result.esum)+"</td></tr>";
                  tbodys+="</tbody>";
                  $('table').empty().append(tbodys);
              }

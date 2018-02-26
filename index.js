@@ -26,25 +26,8 @@ app.use(bodyParser.urlencoded({extended: true}));
 // setup assets location
 app.use(express.static(__dirname + "/public"));
 
-app.get("/test",function(req,res){
-    let month="Feb";
-    let year=2018;
-    messConn.query(
-        "select sum(orders.qty*orders.rate) as totalPrice ,"+
-        " suppliers.name from orders INNER JOIN suppliers on orders.supplierId=suppliers.id" +
-              " and orders.month= " +"'"+month+"'"+
-              " and year(orders.createdAt)="+year+
-              " group by supplierId;"
-   
-    ).then(r=> {
-        let rr=JSON.stringify(r);
-        rr=JSON.parse(rr);
-        console.log(rr);
-        res.send(r[0][0][0]);
-    })
 
 
-})
 app.get("/", function(req, res) {
     if(f==0)
         res.render("home.ejs",{error: "", success: ""});
@@ -453,11 +436,7 @@ app.get("/actualbill/:month/:year",function(req,res){
             nameArr.total[i] = r[i].totalPrice;
             nameArr.sum += r[i].totalPrice;
         }
-        Worker.findAll().then(row=>{
-            let workerSum = 0;
-            for(let i = 0; i < row.length; i++) {
-                workerSum+=row[i].salary;
-            }
+       
             Extras.findAll().then(row => {
                 let esum = 0;
                 for(let i = 0; i < row.length; i++) {
@@ -465,11 +444,10 @@ app.get("/actualbill/:month/:year",function(req,res){
                 }
                 res.send( {
                     bill: nameArr,
-                    wsum: workerSum,
                     esum: esum
                 });
             });
-        });
+        
     });
 
 })

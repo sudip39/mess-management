@@ -1,0 +1,171 @@
+<% include ./partials/header %>
+    <div class="container" style="margin-top:30px;">
+        <ul class="nav nav-tabs nav-justified indigo" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" data-toggle="tab" href="#panel5" role="tab"><i class="fa fa-rupee-sign"></i> Bill no Details</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#panel6" role="tab"><i class="fa fa-user"></i>Search Supplier's  </a>
+            </li>
+        </ul>
+        <!-- Tab panels -->
+        <div class="tab-content">
+            <!--Panel 1-->
+            <div class="tab-pane fade in show active" id="panel5" role="tabpanel">
+               <div class="md-form" style="display:inline-block;width:75%;">
+                    <input type="text" id="billNo" class="form-control">
+                    <label for="billNo" >Enter Bill No</label>
+
+               </div>
+
+               <div style="display:inline-block;">
+                   <button class="btn btn-danger billSearch">Submit</button>
+
+               </div>
+                <div class="container" id="billbody">
+
+                </div>
+            </div>
+            <!--/.Panel 1-->
+            <!--Panel 2-->
+            <div class="tab-pane fade" id="panel6" role="tabpanel">
+                <div class="container"> 
+                    <div class="md-form" style=" margin-top:3%; width:20%; float:left;display:inline-block;">
+                        <select name="supplier" id="supplier">
+
+                        </select>
+                    </div>
+                        <div class="md-form" style=" margin-top:3%; width:20%; float:left;display:inline-block;">
+                                <select name="month" id="month" style="width:100%;">
+                                    <option value="1">January</option>
+                                    <option value="2">February</option>
+                                    <option value="3">March</option>
+                                    <option value="4">April</option>
+                                    <option value="5">May</option>
+                                    <option value="6">June</option>
+                                    <option value="7">July</option>
+                                    <option value="8">August</option>
+                                    <option value="9">September</option>
+                                    <option value="10">October</option>
+                                    <option value="11">November</option>
+                                    <option value="12">December</option>
+                                </select>
+                            </div>
+                        
+                            <div class="md-form"style="margin-left:5%; margin-top:3%; width:20%; float:left;display:inline-block;">
+                                <select  id="year" style="width:100%; text-align:center;"></select>
+                            </div>
+                            <div class="md-form"style="margin-top:1%;  float:left;display:inline-block;">
+                                    <button id="SupBill" class="btn btn-info" type="submit">search</button>
+                            </div>
+                           
+                            <div id="supBody" style="display:block;clear:left;">
+
+                            </div>
+                </div>
+            </div>
+            <!--/.Panel 2-->
+           
+        </div>
+    </div>
+
+<%include ./partials/footer %>
+    <script>
+     $(document).ready(function(){
+        var start = 2018;
+     var end = new Date().getFullYear();
+     var options = "";
+     for(let year = start ; year <=end; year++){
+         options += "<option>"+ year +"</option>";
+     }
+     document.getElementById("year").innerHTML = options;
+         $.ajax({
+             type: "GET",
+             url:"/allsupplier",
+             success:function(result){
+               let select=  $("select#supplier");
+               let option="";
+               for(let i=0;i<result.length;i++)
+               {
+                   option+="<option value="+result[i].id +">"+result[i].name+"</option>"
+               }
+               select.append(option);
+             }
+         })
+         let sid=1;
+         let year = "2018";
+         let month ="1";
+         let h1="Adhunik House";
+        $('select#year').change(function(){
+            year= $(this).val();
+        })
+        $('select#month').change(function(){
+            month=$(this).val();
+        });
+        $('select#supplier').change(function(){
+            sid=$(this).val();
+            h1=$("#supplier :selected").text();
+
+        })
+         $("button#SupBill").on('click',function(){
+            
+             $.ajax({
+                 type: 'GET',
+                 url:"/suppliersearch/"+sid+"/"+month+"/"+year,
+                 success:function(result){
+                     let total=0;
+                     let supbody=$('#supBody');
+                     supbody.empty();
+                     let makeDetails="";
+                     makeDetails+="<h3>"+h1+"</h3>";
+                     makeDetails+="<table class='table'><thead> <th>Item Name</th><th>Total Quantity</th><th>Rate</th><th>Bill</th></thead><tbody>"
+                     if(result.length==0)
+                     {
+                        toastr["error"]("No results found");
+                        return;
+                     }
+                     for(let i=0;i<result.length;i++)
+                     {
+                         makeDetails+="<tr><td>"+result[i].name+"</td><td>"+
+                                       result[i].total+"</td>"+"<td>"+
+                                       result[i].rate+"</td><td>"+
+                                       result[i].total*result[i].rate+"</td></tr>";
+                        total+=result[i].total*result[i].rate;
+                     }
+                    makeDetails+="<tr><td colspan=3>Total</td><td>"+total+"</td></table>"
+                     supbody.append(makeDetails);
+                     
+                 }
+             })
+
+         })
+         $("button.billSearch").on("click",function(){
+             let billno=$("input#billNo").val();
+             $.ajax({
+                 type: "GET",
+                 url: "/billsearch/"+billno,
+                 success: function(result) {
+                    let t1=$("div#billbody").empty();
+                    if(result.length==0)
+                    {
+                        toastr["error"]("No results found");
+                        return;
+                    } 
+                    let bodys="<h3>"+result[0].supp+"</h3>";
+                    let table="";
+                     table="<table class=table>";
+                    table+="<thead> <th>Item Name</th><th>Total Quantity</th><th>Rate</th><th>Bill</th></thead><tbody>"
+                    for(let i=0;i<result.length;i++)
+                    {
+                        table+="<tr><td>"+result[i].item+"<td>"+result[i].qty+"</td>"+"<td>"+result[i].rate+"</td><td>"+
+                        (result[i].qty*result[i].rate)+"</td></tr>";
+                    }
+                    table=bodys+table+"</tbody>";
+                    console.log(table);
+                    t1.append(table);
+                    
+                 }
+             });
+         });
+     });
+    </script>

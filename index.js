@@ -77,6 +77,39 @@ app.get("/printOut", function(req,res) {
     });
 })
 
+app.get("/allsupplier",function(req,res){
+    Supplier.findAll().then(rows=>{
+        res.send(rows);
+    })
+})
+app.get("/billsearch/:billno",function(req,res){
+    let billNo=req.params.billno;
+    messConn
+        .query("select o.qty as qty, o.rate as rate,"+
+               " s.name as supp, i.name as item"+
+               " from orders as o, suppliers as s, items as i"+
+               " where o.billno="+billNo+" and s.id=o.supplierId and o.itemId=i.id;")
+        .then(rows => {
+            console.log(rows);
+            res.send(rows[0]);
+        });
+});
+
+app.get("/suppliersearch/:sid/:month/:year", function (req, res) {
+    let sid =parseInt( req.params.sid);
+    let year = parseInt(req.params.year);
+    let month = parseInt(req.params.month);
+    messConn
+        .query("select o.itemId, sum(o.qty) as total, o.rate, i.name" +
+               " from orders as o, items as i" +
+               " where o.itemId=i.id and o.supplierId="+sid+
+               "  and year(o.createdAt)="+year+" and month(o.createdAt)="+month+
+               " group by o.itemId, o.rate;")
+        .then(rows => {
+            console.log(rows);
+            res.send(rows[0]);
+        })
+})
 
 app.post("/finalize",isMessSake,function(req,res){
     res.redirect("/printOut");
@@ -116,7 +149,7 @@ app.get("/dailybillrecords/:month/:year",function(req,res){
         for(i=0;i<bills[0].length;i++) {
             tot+=bills[0][i].totalBill;
         }
-        
+
 
         res.send({
             record:bills,
@@ -124,7 +157,7 @@ app.get("/dailybillrecords/:month/:year",function(req,res){
         })
     });
 })
-app.get("/dailybillrecords",function(req,res){    
+app.get("/dailybillrecords",function(req,res){
         res.render("records.ejs");
 })
 
@@ -270,7 +303,9 @@ app.post("/itemperday",isMessSake, function(req, res) {
     },4000);
 
 });
-
+app.get("/supdetails",function(req,res){
+    res.render("supDetails.ejs");
+})
 
 app.get("/changerate", function(req,res) {
     Item.findAll().then(rows => {
@@ -429,14 +464,14 @@ app.get("/actualbill/:month/:year",function(req,res){
          row=JSON.stringify(row);
         row=JSON.parse(row);
         let r=row[0];
-        
-    
+
+
         for(let i = 0; i < r.length; i++) {
             nameArr.name[i] = r[i]['name'];
             nameArr.total[i] = r[i].totalPrice;
             nameArr.sum += r[i].totalPrice;
         }
-       
+
             Extras.findAll().then(row => {
                 let esum = 0;
                 for(let i = 0; i < row.length; i++) {
@@ -447,7 +482,7 @@ app.get("/actualbill/:month/:year",function(req,res){
                     esum: esum
                 });
             });
-        
+
     });
 
 })

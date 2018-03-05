@@ -7,8 +7,7 @@ const mess = require('./dbConnection/mess');
 const Order = mess.define('order', {
     qty: orm.FLOAT,
     rate: orm.FLOAT,
-    billNo: orm.INTEGER(11),
-    month: orm.STRING
+    billNo: orm.INTEGER(11)
 });
 Order.belongsTo(Item, {target: 'id'});
 Order.belongsTo(Supplier, {target: 'id'});

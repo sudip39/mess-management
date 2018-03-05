@@ -30,6 +30,14 @@
                 <table id="itemlist" style="width: 100%"></table>
             </div>
             <div class="md-form">
+                <input type="checkbox" checked="false" id="orangeForm-date" />
+                <label for="orangeForm-date">Select date manually</label>
+            </div>
+            <input type="text" name="datechecked" hidden="true" />
+            <div class="md-form">
+                <input type="date" id="orangeForm-orderdate" name="orderdate" />
+            </div>
+            <div class="md-form">
                 <i class="fa fa-calendar-minus prefix grey-text"></i>
                 <input type="text" required id="orangeForm-billno" name="billNo" class="form-control" required />
                 <label for="orangeForm-billno">Bill No</label>
@@ -51,53 +59,70 @@
 
  $(document).ready(function () {
 
-    function disableSubmit() {
-        if ($("select#supId").val() == 'none' || $("table#itemlist").children().length == 0)
-            btn.disabled = true;
-        else
-            btn.disabled = false;
-    }
+     $("#orangeForm-date")[0].checked = false;
+     $("input[name=datechecked]").val("false");
+     $("#orangeForm-orderdate").prop('required', false);
+     $("#orangeForm-orderdate").hide();
 
-    $("select#supId").change(function () {
-        let x = $(this).val();
-        $("input[name='supplierId']").val('' + x);
-        disableSubmit();
-    })
+     $("#orangeForm-date").change(function () {
+         if (this.checked == true) {
+             $("input[name=datechecked]").val("true");
+             $("#orangeForm-orderdate").prop('required', true);
+             $('#orangeForm-orderdate').show();
+         } else {
+             $("input[name=datechecked]").val("false");
+             $("#orangeForm-orderdate").prop('required', false);
+             $('#orangeForm-orderdate').hide();
+         }
+     });
 
-    $("select#items").change(function () {
-        let current = $(this).children(":selected");
-        if (current == 'none')
-            return 0;
-        let currentVal = JSON.parse(current.val());
-        let rate = parseFloat(currentVal.price);
-        let id = parseFloat(currentVal.itemId);
-        let type = currentVal.qtype;
-        $("table").append("<tr><td>" + current.text() + "</td><td>" +
-                        "<input hidden='true' type='text' " + "name='item[" + i + "][itemId]' value =" + id + " />" +
-                        "<input hidden='true' type='text' name='item[" + i + "][rate]'" + " value='" + rate + "' />" +
-                        "<div class='md-form'>" +
-                        "<input type='text' required id='orangeForm-"+i+"' name='item[" + i + "][qty]' " + " autocomplete='off' required />" +
-                        "<label for='orangeForm-"+i+"'>Quantity</label>" +
-                        "</div></td>" +
-                        "<td>"+
-                        "<h4>"+
-                        type +
-                        "</h4>"+
-                        "</td>"+
-                        "<td><div class='md-form'>" +
-                        "<a class='remove-btn btn-floating btn-sm btn-danger'>" +
-                        "<i class='fa fa-times ' style='margin-top:30%;margin-left:35%;' ></i></a>" +
-                        "</div></td></tr>");
-        i++;
-        disableSubmit();
-    });
-    let btn = $("button#sub")[0]
-    btn.disabled = true;
-    $(document).on('click', '.remove-btn', function(e) {
-        e.preventDefault();
-        row = $(this).parent().parent().parent().remove();
-        $(this).remove();
-        disableSubmit();
-    });
-});
+     function disableSubmit() {
+         if ($("select#supId").val() == 'none' || $("table#itemlist").children().length == 0)
+             btn.disabled = true;
+         else
+             btn.disabled = false;
+     }
+
+     $("select#supId").change(function () {
+         let x = $(this).val();
+         $("input[name='supplierId']").val('' + x);
+         disableSubmit();
+     })
+
+     $("select#items").change(function () {
+         let current = $(this).children(":selected");
+         if (current == 'none')
+             return 0;
+         let currentVal = JSON.parse(current.val());
+         let rate = parseFloat(currentVal.price);
+         let id = parseFloat(currentVal.itemId);
+         let type = currentVal.qtype;
+         $("table").append("<tr><td>" + current.text() + "</td><td>" +
+                           "<input hidden='true' type='text' " + "name='item[" + i + "][itemId]' value =" + id + " />" +
+                           "<input hidden='true' type='text' name='item[" + i + "][rate]'" + " value='" + rate + "' />" +
+                           "<div class='md-form'>" +
+                           "<input type='text' required id='orangeForm-"+i+"' name='item[" + i + "][qty]' " + " autocomplete='off' required />" +
+                           "<label for='orangeForm-"+i+"'>Quantity</label>" +
+                           "</div></td>" +
+                           "<td>"+
+                           "<h4>"+
+                           type +
+                           "</h4>"+
+                           "</td>"+
+                           "<td><div class='md-form'>" +
+                           "<a class='remove-btn btn-floating btn-sm btn-danger'>" +
+                           "<i class='fa fa-times ' style='margin-top:30%;margin-left:35%;' ></i></a>" +
+                           "</div></td></tr>");
+         i++;
+         disableSubmit();
+     });
+     let btn = $("button#sub")[0]
+     btn.disabled = true;
+     $(document).on('click', '.remove-btn', function(e) {
+         e.preventDefault();
+         row = $(this).parent().parent().parent().remove();
+         $(this).remove();
+         disableSubmit();
+     });
+ });
 </script>

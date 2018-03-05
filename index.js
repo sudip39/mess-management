@@ -360,7 +360,8 @@ app.post("/order", isMessSake, function(req,res){
     for (let i = 0; i < items.length; ++i) {
         items[i].supplierId = input.supplierId;
         items[i].billNo = input.billNo;
-        items[i].month = new Date().toDateString().split(" ")[1];
+        if (input.datechecked == "true")
+            items[i].createdAt = input.orderdate;
 
         Order.create(items[i]).then(row => {
             Storage.findAll(
@@ -370,57 +371,6 @@ app.post("/order", isMessSake, function(req,res){
                     {qty:parseFloat(items[i].qty)+s[0].dataValues.qty},
                     { where: {itemId:parseInt(items[i].itemId)} }
                 );
-                let month= new Date().toDateString().split(" ")[1];
-                let nameArr={name: [],total: [], sum: 0};
-
-                Order.findAll({
-                    where: {month: month},
-                    group: ['supplierId'],
-                    attributes: [[orm.fn('sum', orm.literal('qty * rate')), 'totalPrice']],
-                    raw: true,
-                    include: [{
-                        model: Supplier,
-                        attributes: ['name'],
-                        required: true
-                    }]
-                }).then(r => {
-                    for(let i = 0; i < r.length; i++) {
-                        nameArr.name[i] = r[i]['supplier.name'];
-                        nameArr.total[i] = r[i].totalPrice;
-                        nameArr.sum += r[i].totalPrice;
-                    }
-                    Worker.findAll().then(row=>{
-                        let workerSum = 0;
-                        for(let i = 0; i < row.length; i++) {
-                            workerSum+=row[i].salary;
-                        }
-                        Extras.findAll().then(row => {
-                            let esum = 0;
-                            for(let i = 0; i < row.length; i++) {
-                                esum += row[i].bill;
-                            }
-
-                            let year = parseInt(new Date().toDateString().split(" ")[3]);
-                            let bill=esum+workerSum+nameArr.sum;
-                            MonthlyBill.update({
-                                bill:bill},
-                                               { where:{ month: month } }
-
-                                              ).then(row=>{
-                                                  console.log(row[0]);
-                                                  if(row[0]==0)
-                                                  {
-                                                      MonthlyBill.create({
-                                                          month:month,
-                                                          year:year,
-                                                          bill:bill
-
-                                                      });
-                                                  }
-                                              })
-                        });
-                    });
-                });
             });
 
         });
@@ -456,7 +406,7 @@ app.get("/actualbill/:month/:year",function(req,res){
     messConn.query(
             "select sum(orders.qty*orders.rate) as totalPrice ,"+
             "suppliers.name from orders INNER JOIN suppliers on orders.supplierId=suppliers.id" +
-            " where orders.month= " +"'"+month+"'"+
+            " where month(orders.createdAt)= " +"'"+month+"'"+
             " and year(orders.createdAt)="+year+
             " group by supplierId;"
 
@@ -583,11 +533,6 @@ function isMessSake(req,res,next) {
 }
 
 
-// app.listen(app.get('port'), function() {
-//     console.log('Node app is running on port', app.get('port'));
-//   });
-
-
-app.listen(8080,"localhost", function(){
+app.listen(8080,"159.89.93.15", function(){
     console.log("The Mess server has Started!!!");
 });

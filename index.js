@@ -364,14 +364,27 @@ app.post("/order", isMessSake, function(req,res){
             items[i].createdAt = input.orderdate;
 
         Order.create(items[i]).then(row => {
-            Storage.findAll(
-                { where: {itemId:parseInt(items[i].itemId)} }
-            ).then(s =>{
-                Storage.update(
-                    {qty:parseFloat(items[i].qty)+s[0].dataValues.qty},
+            let up=0;
+            if(input.orderdate != '')
+            {
+                let mo=parseInt(input.orderdate.split("-")[1]);
+                let cmo = (new Date()).getMonth()+1;
+               
+                if(mo!=cmo)
+                up=1;
+            
+            }
+            if(up==0)
+            {
+                Storage.findAll(
                     { where: {itemId:parseInt(items[i].itemId)} }
-                );
-            });
+                ).then(s =>{
+                    Storage.update(
+                        {qty:parseFloat(items[i].qty)+s[0].dataValues.qty},
+                        { where: {itemId:parseInt(items[i].itemId)} }
+                    );
+                });
+           }
 
         });
 
@@ -533,6 +546,6 @@ function isMessSake(req,res,next) {
 }
 
 
-app.listen(8080,"159.89.93.15", function(){
+app.listen(8080,"localhost", function(){
     console.log("The Mess server has Started!!!");
 });

@@ -7,6 +7,18 @@
 
 <script>
 
+ function precision(x)
+ {
+     let m=parseInt(x);
+     let n=parseInt(x*100);
+     let y;
+     y=n-(m*100);
+     y=y*0.01;
+     m=m+y;
+     return m;
+
+ }
+
  $( document ).ready(function() {
      if ($("#serv-error")[0]) {
          let err = $("#serv-error")[0].value;

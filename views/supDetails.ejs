@@ -127,12 +127,12 @@
                      for(let i=0;i<result.length;i++)
                      {
                          makeDetails+="<tr><td>"+result[i].name+"</td><td>"+
-                                       result[i].total+"</td>"+"<td>"+
+                                       precision(result[i].total)+"</td>"+"<td>"+
                                        result[i].rate+"</td><td>"+
-                                       result[i].total*result[i].rate+"</td></tr>";
+                                       precision(result[i].total*result[i].rate)+"</td></tr>";
                         total+=result[i].total*result[i].rate;
                      }
-                    makeDetails+="<tr><td colspan=3>Total</td><td>"+total+"</td></table>"
+                    makeDetails+="<tr><td colspan=3>Total</td><td>"+precision(total)+"</td></table>"
                      supbody.append(makeDetails);
                      
                  }
@@ -158,7 +158,7 @@
                     for(let i=0;i<result.length;i++)
                     {
                         table+="<tr><td>"+result[i].item+"<td>"+result[i].qty+"</td>"+"<td>"+result[i].rate+"</td><td>"+
-                        (result[i].qty*result[i].rate)+"</td></tr>";
+                        precision(result[i].qty*result[i].rate)+"</td></tr>";
                     }
                     table=bodys+table+"</tbody>";
                     console.log(table);
